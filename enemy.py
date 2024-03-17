@@ -16,13 +16,6 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
     def move(self):
-        #define a target waypoint
-        if self.target_waypoint < len(self.waypoints):
-            self.target = Vector2(self.waypoints[self.target_waypoint])
-            self.movement = self.target - self.pos
-        else:
-            self.kill() #remove instantiate the enemy from screen
-
         #calculate distance to target
         dist = self.movement.length()
 
@@ -37,6 +30,13 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
     def rotate(self):
+        #define a target waypoint
+        if self.target_waypoint < len(self.waypoints):
+            self.target = Vector2(self.waypoints[self.target_waypoint])
+            self.movement = self.target - self.pos
+        else:
+            self.kill() #remove instantiate the enemy from screen
+
         #calculate distane to next waypoint
         dist = self.target - self.pos
         #use distance to calculate the angle
@@ -48,5 +48,5 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
     def update(self):
-        self.move()
         self.rotate()
+        self.move()

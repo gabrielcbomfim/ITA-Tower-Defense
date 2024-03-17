@@ -14,7 +14,7 @@ screen = pg.display.set_mode((c.SCREEN_WIDHT, c.SCREEN_HEIGHT))
 pg.display.set_caption("ITAwer Defense")
 
 #load images
-enemy_image = pg.image.load("arquivos/Part 2/assets/images/enemies/enemy_1.png")
+enemy_image = pg.image.load("./enemy_1.png")
 
 #enemy path
 waypoints = [(100, 100),
