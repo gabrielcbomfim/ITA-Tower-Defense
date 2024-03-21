@@ -1,3 +1,4 @@
+import pygame
 import pygame as pg
 import constants as c
 from enemy import Enemy
@@ -10,7 +11,8 @@ pg.init()
 clock = pg.time.Clock()
 
 #create game window
-screen = pg.display.set_mode((c.SCREEN_WIDHT, c.SCREEN_HEIGHT))
+#screen = pg.display.set_mode((c.SCREEN_WIDHT, c.SCREEN_HEIGHT))
+screen = pg.display.set_mode((0, 0), pygame.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
 
 #load images
@@ -24,12 +26,12 @@ waypoints = [(100, 100),
             (45, 40),
             (45, 300)]
 
-#enemies groups
+# Enemies groups
 enemy_group = pg.sprite.Group()
 enemy = Enemy(waypoints, enemy_image)
 enemy_group.add(enemy)
 
-#game loop
+# Game loop
 run = True
 while run:
     
