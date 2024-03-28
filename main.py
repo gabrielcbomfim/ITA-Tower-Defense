@@ -1,40 +1,40 @@
-import pygame
+import json
 import pygame as pg
 import constants as c
 from enemy import Enemy
 from world import World
- 
+
+
 #initialise pygame
 pg.init()
 
 #create clock
 clock = pg.time.Clock()
 
+
 #create game window
-#screen = pg.display.set_mode((c.SCREEN_WIDHT, c.SCREEN_HEIGHT))
-screen = pg.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+# Size bizu: 1580, 860
+screen = pg.display.set_mode((1580, 860), pg.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
 
 #load images
 enemy_image = pg.image.load("./enemy_1.png")
-map_image = pg.image.load("./assets/mapa/mapa1.png")
+map_image = pg.image.load("./assets/mapa/mapa4.png")
 map_image_resized = pg.transform.scale(map_image, (screen.get_width(), screen.get_height()))
 
-# Create world
-world = World(map_image_resized)
+#load json data for level
+with open('assets/mapa/mapaTiled/level_data.tmj') as file:
+    world_data = json.load(file)
 
-#enemy path
-waypoints = [(100, 100),
-            (300, 250),
-            (480, 150),
-            (220, 50),
-            (45, 40),
-            (45, 300)]
+# Create world
+world = World(screen, world_data, map_image_resized)
+world.process_data()
+
 
 
 # Enemies groups
 enemy_group = pg.sprite.Group()
-enemy = Enemy(waypoints, enemy_image)
+enemy = Enemy(world.paths[0], enemy_image)
 enemy_group.add(enemy)
 
 # Game loop
@@ -50,7 +50,7 @@ while run:
     world.draw(screen)
 
     #draw enemy path
-    pg.draw.lines(screen, "grey0", False, waypoints)
+    pg.draw.lines(screen, "grey0", False, world.paths[0])
 
     #update groups
     enemy_group.update()
