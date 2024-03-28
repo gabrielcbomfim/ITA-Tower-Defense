@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="82" height="46" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="21">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="82" height="46" tilewidth="32" tileheight="32" infinite="0" nextlayerid="25" nextobjectid="42">
  <editorsettings>
   <export target="level_data.tmj" format="json"/>
  </editorsettings>
@@ -56,7 +56,7 @@
  </layer>
  <objectgroup id="4" name="fund_path1" visible="0" locked="1">
   <object id="14" x="1250" y="894">
-   <polyline points="0,0 89,0 87,223 -163,213 -662,202 -662,369"/>
+   <polyline points="-7.5,-0.5 89,0 87,223 -163,213 -662,202 -662,369"/>
   </object>
  </objectgroup>
  <objectgroup id="5" name="fund_path2" visible="0" locked="1">
@@ -94,9 +94,45 @@
    <polyline points="0,0 114,-84 328,-88 336,-372 22,-380 -68,-460 -230,-444 -748,-212 -770,-128 -886,-28 -778,88 -670,222 -494,232 -512,530 -684,524 -670,700"/>
   </object>
  </objectgroup>
- <objectgroup id="12" name="comp_path4">
+ <objectgroup id="12" name="comp_path4" visible="0" locked="1">
   <object id="20" x="1252" y="552">
    <polyline points="0,0 144,-50 342,-48 338,180 -154,186 -178,236 -170,554 -656,530 -672,724"/>
   </object>
+ </objectgroup>
+ <objectgroup id="13" name="lote1">
+  <object id="27" x="44.1667" y="300" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="14" name="lote2">
+  <object id="29" x="237.333" y="302.5" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="15" name="lote3">
+  <object id="30" x="299.667" y="716" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="16" name="lote4">
+  <object id="31" x="522.667" y="877" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="17" name="lote5">
+  <object id="32" x="556" y="107.333" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="18" name="lote6">
+  <object id="35" x="844" y="843.667" width="200.333" height="197.5"/>
+ </objectgroup>
+ <objectgroup id="19" name="lote7">
+  <object id="36" x="876" y="1166" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="20" name="lote8">
+  <object id="37" x="1165.18" y="1228.88" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="21" name="lote9">
+  <object id="38" x="1356" y="1227.33" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="22" name="lote10">
+  <object id="39" x="1390.5" y="268.97" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="23" name="lote11">
+  <object id="40" x="1387" y="557.667" width="133.333" height="132"/>
+ </objectgroup>
+ <objectgroup id="24" name="lote12">
+  <object id="41" x="1389.5" y="811.833" width="133.333" height="132"/>
  </objectgroup>
 </map>
