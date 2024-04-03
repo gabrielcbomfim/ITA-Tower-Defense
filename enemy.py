@@ -3,7 +3,7 @@ from _ast import arg
 import pygame as pg
 from pygame.math import Vector2
 import math
-
+from enemy_data import ENEMY_DATA
 
 class Enemy(pg.sprite.Sprite):
     """
@@ -23,14 +23,15 @@ class Enemy(pg.sprite.Sprite):
         image (pg.Surface): Imagem atual do inimigo
         rect (Rect): Retângulo que está centrado no inimigo
     """
-    def __init__(self, waypoints, original_image):
+    def __init__(self,enemy_type, waypoints, images):
         pg.sprite.Sprite.__init__(self)
         self.waypoints = waypoints
         self.pos = Vector2(self.waypoints[0]) 
         self.target_waypoint = 1
-        self.speed = 1.2
+        self.health = ENEMY_DATA.get(enemy_type)["health"]
+        self.speed = ENEMY_DATA.get(enemy_type)["health"]
         self.angle = 0
-        self.original_image = original_image
+        self.original_image = images.get(enemy_type)
         self.image = pg.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos

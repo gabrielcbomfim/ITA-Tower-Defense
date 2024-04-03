@@ -11,8 +11,6 @@ pg.init()
 
 #create clock
 clock = pg.time.Clock()
-selected_turret = None
-
 
 #create game window
 # Size bizu: 1580, 860
@@ -20,14 +18,21 @@ screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
 
 # Game Variables
+last_enemy_spawn = pg.time.get_ticks()
 placing_turrets = False
+selected_turret = None
 
 #load images
 # Map:
 map_image = pg.image.load("./assets/mapa/mapa4.png")
 map_image_resized = pg.transform.scale(map_image, (screen.get_width(), screen.get_height()))
 # Enemies:
-enemy_image = pg.image.load("./enemy_1.png")
+enemy_images = {
+    "weak": pg.image.load("./assets/enemies/enemy_1.png"),
+    "medium": pg.image.load("./assets/enemies/enemy_2.png"),
+    "strong": pg.image.load("./assets/enemies/enemy_3.png"),
+    "elite": pg.image.load("./assets/enemies/enemy_4.png")
+}
 
 
 #turret spritesheets
@@ -73,10 +78,6 @@ world = World(screen, world_data, map_image_resized)
 enemy_group = pg.sprite.Group()
 turret_group = pg.sprite.Group()
 
-# Create enemies
-enemy = Enemy(world.paths[5], enemy_image)
-enemy_group.add(enemy)
-
 # Create buttons:
 turrent_button = Button(c.SCREEN_WIDHT+30, 120, buy_turrent_image)
 cancel_button = Button(c.SCREEN_WIDHT+30, 180, cancel_image)
@@ -114,6 +115,16 @@ while run:
     enemy_group.draw(screen)
     for turret in turret_group:
         turret.draw(screen)
+
+    #Spawn enemies
+    if pg.time.get_ticks() - last_enemy_spawn > c.SPAWN_COOLDOWN:
+        if world.spawned_enemies < len(world.enemy_list):
+            enemy_type = world.enemy_list[world.spawned_enemies]
+            enemy = Enemy(enemy_type, world.paths[5], enemy_images)
+            enemy_group.add(enemy)
+            world.spawned_enemies += 1
+            last_enemy_spawn = pg.time.get_ticks()
+
 
     #draw buttons:
     if turrent_button.draw(screen):

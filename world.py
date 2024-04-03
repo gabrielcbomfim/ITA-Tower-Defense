@@ -1,6 +1,7 @@
 import pygame as pg
 from enum import Enum
-
+import random
+from enemy_data import ENEMY_SPAWN_DATA
 
 class PlotStates(Enum):
     """
@@ -53,9 +54,13 @@ class World:
         self.plots = []
         self.level_data = data
         self.image = map_image
+        self.enemy_list = []
+        self.spawned_enemies = 0
+
         self.x_ratio = screen.get_width()/(data['width']*data['tilewidth'])
         self.y_ratio = screen.get_height()/(data['height']*data['tileheight'])
         self.process_data()
+
 
     def process_data(self):
         """
@@ -93,3 +98,14 @@ class World:
          """
         surface.blit(self.image, (0, 0))
 
+    def process_enemies(self):
+        """
+        Processa os inimigos do arquivo de dados
+        """
+        enemies = ENEMY_SPAWN_DATA[self.level -1]
+        for enemy_type in enemies:
+            enemies_to_spawn = enemies[enemy_type]
+            for enemy in range(enemies_to_spawn):
+                self.enemy_list.append(enemy_type)
+        #now randomize the list to shuffle the enemies
+        random.shuffle(self.enemy_list)
