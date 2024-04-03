@@ -16,7 +16,7 @@ selected_turret = None
 
 #create game window
 # Size bizu: 1580, 860
-screen = pg.display.set_mode((1580, 860), pg.FULLSCREEN)
+screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
 
 # Game Variables
@@ -78,9 +78,9 @@ enemy = Enemy(world.paths[5], enemy_image)
 enemy_group.add(enemy)
 
 # Create buttons:
-turrent_button = Button(1230, 120, buy_turrent_image)
-cancel_button = Button(1230, 180, cancel_image)
-upgrade_button = Button(1205, 180, upgrade_turret_image)
+turrent_button = Button(c.SCREEN_WIDHT+30, 120, buy_turrent_image)
+cancel_button = Button(c.SCREEN_WIDHT+30, 180, cancel_image)
+upgrade_button = Button(c.SCREEN_WIDHT+5, 180, upgrade_turret_image)
 
 # Game loop
 run = True

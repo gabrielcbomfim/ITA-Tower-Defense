@@ -1,7 +1,7 @@
 # Constants used in the game
 
-SCREEN_HEIGHT = 800
-SCREEN_WIDHT = 1200
+SCREEN_HEIGHT = 1080
+SCREEN_WIDHT = 1400
 TILE_SIZE = 1
 FPS = 60
 
