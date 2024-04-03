@@ -20,10 +20,6 @@ selected_turret = None
 screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
 
-#game variables
-placing_turrets = False
-selected_turret = None
-
 #load images
 # Map:
 map_image = pg.image.load("./assets/mapa/mapa4.png")
@@ -57,7 +53,6 @@ def create_turret(mouse_pos):
     mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
     turret = Turret(turret_spritesheets, mouse_tile_x, mouse_tile_y)
     turret_group.add(turret)
-
 
 def select_turret(mouse_pos):
     mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
@@ -103,8 +98,7 @@ while run:
 
     # update groups
     enemy_group.update()
-    for turret in turret_group:
-        turret.draw(screen)
+    turret_group.update(enemy_group)
 
     #highlight selected turret
     if selected_turret:
@@ -125,6 +119,8 @@ while run:
     for turret in turret_group:
         turret.draw(screen)
 
+
+
     #draw buttons:
     if turrent_button.draw(screen):
         placing_turrets = True
@@ -144,8 +140,8 @@ while run:
             if upgrade_button.draw(screen):
                 selected_turret.upgrade()
 
-    # #draw UI
-    # turret_shop.draw(screen)
+    #draw UI
+    turret_shop.draw(screen)
 
 
     #event handler
@@ -168,12 +164,12 @@ while run:
                 else:
                     selected_turret = select_turret(mouse_pos)
 
-        # if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and turret_shop.placing_turrets:
-        #     mouse_pos = pg.mouse.get_pos()
-        #     # Check if mouse is on the game area
-        #     if mouse_pos[0] < screen.get_width() and mouse_pos[1] < screen.get_height():
-        #         pass
-        #     turret_shop.create_turret(mouse_pos, turret_group)
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and turret_shop.placing_turrets:
+            mouse_pos = pg.mouse.get_pos()
+            # Check if mouse is on the game area
+            if mouse_pos[0] < screen.get_width() and mouse_pos[1] < screen.get_height():
+                pass
+            turret_shop.create_turret(mouse_pos, turret_group)
 
 
 
