@@ -37,10 +37,11 @@ cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
-# def create_turret(mouse_pos):
-#     mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
-#     turret = Turret(cursor_turret, mouse_pos)
-#     turret_group.add(turret)
+def create_turret(mouse_pos):
+    mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
+    mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
+    turret = Turret(cursor_turret, mouse_tile_x, mouse_tile_y)
+    turret_group.add(turret)
 
 
 # Create world
@@ -85,7 +86,7 @@ while run:
 
     #Draw groups
     enemy_group.draw(screen)
-
+    turret_group.draw(screen)
 
     #draw buttons:
     if turrent_button.draw(screen):
@@ -108,12 +109,13 @@ while run:
             run = False
 
         # Mouse Click:
-        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and placing_turrets:
             mouse_pos = pg.mouse.get_pos()
             # Check if mouse is on the game area
             if mouse_pos[0] < screen.get_width() and mouse_pos[1] < screen.get_height():
                 pass
-                #create_turret(mouse_pos)
+            create_turret(mouse_pos)
+
 
 
 
