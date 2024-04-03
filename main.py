@@ -3,6 +3,7 @@ import pygame as pg
 from enemy import Enemy
 from world import World
 from turret import Turret
+from turret_shop import TurretShop
 from button import Button
 import constants as c
 
@@ -16,11 +17,8 @@ selected_turret = None
 
 #create game window
 # Size bizu: 1580, 860
-screen = pg.display.set_mode((1580, 860), pg.FULLSCREEN)
+screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
 pg.display.set_caption("ITAwer Defense")
-
-# Game Variables
-placing_turrets = False
 
 #load images
 # Map:
@@ -49,6 +47,7 @@ upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").conv
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
+
 def create_turret(mouse_pos):
     mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
     mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
@@ -65,9 +64,12 @@ def select_turret(mouse_pos):
 def clear_selection():
     for turret in turret_group:
         turret.selected = False
+
 # Create world
 world = World(screen, world_data, map_image_resized)
 
+# Create turret shop
+turret_shop = TurretShop(world)
 
 # Enemies groups
 enemy_group = pg.sprite.Group()
@@ -77,10 +79,12 @@ turret_group = pg.sprite.Group()
 enemy = Enemy(world.paths[5], enemy_image)
 enemy_group.add(enemy)
 
+
 # Create buttons:
 turrent_button = Button(1230, 120, buy_turrent_image)
 cancel_button = Button(1230, 180, cancel_image)
 upgrade_button = Button(1205, 180, upgrade_turret_image)
+
 
 # Game loop
 run = True
@@ -115,6 +119,8 @@ while run:
     for turret in turret_group:
         turret.draw(screen)
 
+
+
     #draw buttons:
     if turrent_button.draw(screen):
         placing_turrets = True
@@ -134,6 +140,9 @@ while run:
             if upgrade_button.draw(screen):
                 selected_turret.upgrade()
 
+    #draw UI
+    turret_shop.draw(screen)
+
 
     #event handler
     for event in pg.event.get():
@@ -142,6 +151,7 @@ while run:
             run = False
 
         # Mouse Click:
+
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pg.mouse.get_pos()
             # Check if mouse is on the game area
@@ -153,6 +163,15 @@ while run:
                     create_turret(mouse_pos)
                 else:
                     selected_turret = select_turret(mouse_pos)
+
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and turret_shop.placing_turrets:
+            mouse_pos = pg.mouse.get_pos()
+            # Check if mouse is on the game area
+            if mouse_pos[0] < screen.get_width() and mouse_pos[1] < screen.get_height():
+                pass
+            turret_shop.create_turret(mouse_pos, turret_group)
+
+
 
 
 
