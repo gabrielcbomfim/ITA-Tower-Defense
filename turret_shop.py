@@ -1,7 +1,9 @@
+import math
 import pygame as pg
 from turret import Turret
 from button import Button
 from world import World
+from world import PlotStates
 import constants as c
 
 
@@ -27,10 +29,12 @@ class TurretShop:
         self.placing_turrets = False
 
     def create_turret(self, mouse_pos, turret_group):
-        mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
-        mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
-        turret = Turret(self.cursor_turret, mouse_tile_x, mouse_tile_y)
-        turret_group.add(turret)
+        for plot in self.world.plots:
+            if plot.is_in(mouse_pos) and plot.state == PlotStates.FOR_SALE:
+                turret = Turret(self.cursor_turret, plot.center())
+                turret_group.add(turret)
+                plot.state = PlotStates.OCCUPIED
+                return
 
     def draw(self, surface):
         """
