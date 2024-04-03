@@ -69,6 +69,7 @@ class World:
                 for obj in layer["objects"]:
                     # Armazena as posições corrigidas dos lotes:
                     self.plots.append(Plot(obj, self.x_ratio, self.y_ratio))
+
     def process_waypoints(self, points, abs_x, abs_y):
         """
         Itera pelos waypoints para extrair sets individuais das coordenadas x e y
