@@ -1,6 +1,7 @@
 import pygame as pg
 from enum import Enum
 import random
+import constants as c
 from enemy_data import ENEMY_SPAWN_DATA
 
 class PlotStates(Enum):
@@ -50,12 +51,18 @@ class World:
          image: A imagem do mapa.
      """
     def __init__(self, screen, data, map_image):
+        self.level = 3
+        self.health = c.HEALTH
+        self.money = c.MONEY
+        self.game_speed = 1
         self.paths = []
         self.plots = []
         self.level_data = data
         self.image = map_image
         self.enemy_list = []
         self.spawned_enemies = 0
+        self.killed_enemies = 0
+        self.missed_enemies = 0
 
         self.x_ratio = screen.get_width()/(data['width']*data['tilewidth'])
         self.y_ratio = screen.get_height()/(data['height']*data['tileheight'])
@@ -89,6 +96,8 @@ class World:
             waypoints.append((temp_x, temp_y))
         self.paths.append(waypoints)
 
+
+
     def draw(self, surface):
         """
          Desenha a imagem do mundo numa superfície.
@@ -109,3 +118,19 @@ class World:
                 self.enemy_list.append(enemy_type)
         #now randomize the list to shuffle the enemies
         random.shuffle(self.enemy_list)
+
+    def check_level_complete(self):
+        """
+        Checa se o level foi completado
+        """
+        if (self.killed_enemies + self.missed_enemies) == len(self.enemy_list):
+            return True
+
+    def reset_level(self):
+        """
+        Reseta o level
+        """
+        self.spawned_enemies = 0
+        self.killed_enemies = 0
+        self.missed_enemies = 0
+        self.enemy_list = []

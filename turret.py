@@ -51,15 +51,16 @@ class Turret(pg.sprite.Sprite):
             animation_list.append(temp_img)
         return animation_list
 
-    def update(self, enemy_group):
+    def update(self, enemy_group, world):
         #if target picked, play firing animation
         if self.target:
             self.pick_target(enemy_group)
-            if pg.time.get_ticks() - self.last_shot > self.cooldown:
+            if pg.time.get_ticks() - self.last_shot > (self.cooldown/world.game_speed):
                 self.play_animation()
         else:
             # search for new target once turret has cooled down
                 self.pick_target(enemy_group)
+
     def play_animation(self):
         #update image
         self.original_image = self.animation_list[self.frame_index]
@@ -81,12 +82,16 @@ class Turret(pg.sprite.Sprite):
 
         #search for new target
         for enemy in enemy_group:
-            x_dist = enemy.pos[0] - self.x
-            y_dist = enemy.pos[1] - self.y
-            dist = math.sqrt(x_dist**2 + y_dist**2)
-            if dist < self.range:
-                self.target = enemy
-                self.angle = math.degrees(math.atan2(-y_dist, x_dist))
+            if enemy.health > 0:
+                x_dist = enemy.pos[0] - self.x
+                y_dist = enemy.pos[1] - self.y
+                dist = math.sqrt(x_dist**2 + y_dist**2)
+                if dist < self.range:
+                    self.target = enemy
+                    self.angle = math.degrees(math.atan2(-y_dist, x_dist))
+                    # damage
+                    self.target.health -= c.DAMAGE
+                    break
 
     def draw(self, surface):
         self.image = pg.transform.rotate(self.original_image, self.angle - 90)

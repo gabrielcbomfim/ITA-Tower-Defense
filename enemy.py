@@ -4,7 +4,7 @@ import pygame as pg
 from pygame.math import Vector2
 import math
 from enemy_data import ENEMY_DATA
-
+import constants as c
 class Enemy(pg.sprite.Sprite):
     """
     Uma classe que representa um inimigo genérico.
@@ -37,13 +37,13 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
 
-    def move(self):
+    def move(self, world):
         #calculate distance to target
         dist = self.movement.length()
 
         #check if remaining distance is greater than the enemy speed
-        if dist >= self.speed:
-            self.pos += self.movement.normalize() * self.speed
+        if dist >= (self.speed*world.game_speed):
+            self.pos += self.movement.normalize() * (self.speed*world.game_speed)
         else: 
             if dist != 0:
                 self.pos += self.movement.normalize() * dist    
@@ -52,13 +52,15 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
 
-    def rotate(self):
+    def rotate(self, world):
         #define a target waypoint
         if self.target_waypoint < len(self.waypoints):
             self.target = Vector2(self.waypoints[self.target_waypoint])
             self.movement = self.target - self.pos
         else:
             self.kill() #remove instantiate the enemy from screen
+            world.health -= 1
+            world.missed_enemies += 1
 
         #calculate distane to next waypoint
         dist = self.target - self.pos
@@ -71,6 +73,13 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
 
 
-    def update(self):
-        self.rotate()
-        self.move()
+    def update(self,world):
+        self.rotate(world)
+        self.move(world)
+        self.check_alive(world)
+
+    def check_alive(self,world):
+        if self.health <= 0:
+            world.money += c.KILL_REWARD
+            world.killed_enemies += 1
+            self.kill()
