@@ -1,12 +1,11 @@
-import json
 import pygame as pg
 from turret import Turret
+from button import Button
 import constants as c
 
 
 class Player:
-    def __init__(self, upgrade_button, cancel_button, turret_button,
-                 cursor_turret, turret_group, turret_spritesheets, world):
+    def __init__(self, turret_group, turret_spritesheets, world):
         self.placing_turrets = False
         self.selected_turret = None
         self.game_speed = 1
@@ -14,10 +13,25 @@ class Player:
         self.health = c.HEALTH
         self.money = c.MONEY
 
-        self.upgrade_button = upgrade_button
-        self.cancel_button = cancel_button
+        # individual turret image for mouse cursor
+        cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
+        # Buttons images:
+        upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
+        cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
+        buy_turrent_image = pg.image.load("./assets/buttons/buy_turret.png").convert_alpha()
+        begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
+        restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
+        fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
+
+        # Create buttons:
+        self.upgrade_button = Button(c.SCREEN_WIDHT + 5, 180, upgrade_turret_image)
+        self.cancel_button = Button(c.SCREEN_WIDHT + 30, 180, cancel_image)
+        self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image)
+        self.begin_button = Button(c.SCREEN_WIDHT + 60, 300, begin_image)
+        self.restart_button = Button(310, 300, restart_image)
+        self.fast_forward_button = Button(c.SCREEN_WIDHT + 60, 340, fast_forward_image)
+
         self.cursor_turret = cursor_turret
-        self.turrent_button = turret_button
         self.turret_group = turret_group
         self.turret_spritesheets = turret_spritesheets
         self.world = world

@@ -2,8 +2,6 @@ import json
 import pygame as pg
 from enemy import Enemy
 from world import World
-from turret import Turret
-from button import Button
 from player import Player
 import constants as c
 
@@ -17,12 +15,6 @@ clock = pg.time.Clock()
 screen = pg.display.set_mode((1920, 1080), pg.SCALED | pg.FULLSCREEN)
 
 pg.display.set_caption("ITAwer Defense")
-
-# Game Variables
-game_over = False
-game_outcome = 0  # -1 is loss, 1 is win
-level_started = False
-last_enemy_spawn = pg.time.get_ticks()
 
 # load images
 # Map:
@@ -42,18 +34,26 @@ for x in range(1, c.TURRET_LEVELS + 1):
     turret_spritesheets.append(pg.image.load(f"./assets/turrets/turret_{x}.png").convert_alpha())
 
 turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
-# individual turret image for mouse cursor
-cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
-# Buttons:
-buy_turrent_image = pg.image.load("./assets/buttons/buy_turret.png").convert_alpha()
-cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
-upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
-begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
-restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
-fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 # load json data for level
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
+
+# load fonts for text on screen
+text_font = pg.font.SysFont("Consolas", 24, bold=True)
+large_font = pg.font.SysFont("Consolas", 36)
+
+
+# font for outputting text on screen
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+
+# Game Variables
+game_over = False
+game_outcome = 0  # -1 is loss, 1 is win
+level_started = False
+last_enemy_spawn = pg.time.get_ticks()
 
 # Create world
 world = World(screen, world_data, map_image_resized)
@@ -64,26 +64,38 @@ world.process_enemies()
 enemy_group = pg.sprite.Group()
 turret_group = pg.sprite.Group()
 
-# Create buttons:
-upgrade_button = Button(c.SCREEN_WIDHT + 5, 180, upgrade_turret_image)
-cancel_button = Button(c.SCREEN_WIDHT + 30, 180, cancel_image)
-turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image)
-begin_button = Button(c.SCREEN_WIDHT + 60, 300, begin_image)
-restart_button = Button(310, 300, restart_image)
-fast_forward_button = Button(c.SCREEN_WIDHT + 60, 340, fast_forward_image)
-
-# load fonts for text on screen
-text_font = pg.font.SysFont("Consolas", 24, bold=True)
-large_font = pg.font.SysFont("Consolas", 36)
-
 # Player
-player = Player(upgrade_button, cancel_button, turrent_button, cursor_turret, turret_group, turret_spritesheets, world)
+player = Player(turret_group, turret_spritesheets, world)
 
 
-# font for outputting text on screen
-def draw_text(text, font, text_col, x, y):
-    img = font.render(text, True, text_col)
-    screen.blit(img, (x, y))
+# restarts the game
+def restart():
+
+    # Game Variables
+    global game_over
+    global game_outcome
+    global level_started
+    global last_enemy_spawn
+    game_over = False
+    game_outcome = 0  # -1 is loss, 1 is win
+    level_started = False
+    last_enemy_spawn = pg.time.get_ticks()
+
+    # Create world
+    global world
+    world = World(screen, world_data, map_image_resized)
+    world.process_data()
+    world.process_enemies()
+
+    # Enemies groups
+    global enemy_group
+    global turret_group
+    enemy_group = pg.sprite.Group()
+    turret_group = pg.sprite.Group()
+
+    # Player
+    global player
+    player = Player(turret_group, turret_spritesheets, world)
 
 
 # Game loop
@@ -113,6 +125,7 @@ while run:
     # highlight selected turret
     if player.selected_turret:
         player.selected_turret.selected = True
+
     ##########################
     # DRAWING SECTION
     ##########################
@@ -137,13 +150,13 @@ while run:
 
         # check if the level started or not
         if not level_started:
-            if begin_button.draw(screen):
+            if player.begin_button.draw(screen):
                 level_started = True
 
         else:
             # speed up the game
             world.game_speed = 1
-            if fast_forward_button.draw(screen):
+            if player.fast_forward_button.draw(screen):
                 world.game_speed = 2
             # Spawn enemies
             if pg.time.get_ticks() - last_enemy_spawn > c.SPAWN_COOLDOWN:
@@ -171,19 +184,9 @@ while run:
             draw_text("GAME OVER", large_font, "grey100", 310, 250)
         elif game_outcome == 1:
             draw_text("YOU WIN", large_font, "grey100", 315, 250)
-            # restart button
-            if restart_button.draw(screen):
-                game_over = False
-                level_started = False
-                last_enemy_spawn = pg.time.get_ticks()
-                player.selected_turret = None
-                player.placing_turrets = None
-                world = World(screen, world_data, map_image_resized)
-                world.process_data()
-                world.process_enemies()
-            # empty groups
-            enemy_group.empty()
-            turret_group.empty()
+        # restart button
+        if player.restart_button.draw(screen):
+            restart()
 
     # event handler
     for event in pg.event.get():
