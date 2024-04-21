@@ -4,6 +4,12 @@ from button import Button
 import constants as c
 
 
+# function for outputting text on screen
+def draw_text(screen, text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+
 class Player:
     def __init__(self, turret_group, turret_spritesheets, world):
         self.placing_turrets = False
@@ -59,18 +65,35 @@ class Player:
     def clear_selection(self):
         for turret in self.turret_group:
             turret.selected = False
+            self.upgrade_button.visible = False
 
-    # function for outputting text on screen
-    def draw_text(self, screen, text, font, text_col, x, y):
-        img = font.render(text, True, text_col)
-        screen.blit(img, (x, y))
+    def update(self):
+        # highlight selected turret
+        if self.selected_turret:
+            self.selected_turret.selected = True
 
+        if self.placing_turrets:
+            self.cancel_button.visible = True
+
+        if self.world.game_over:
+            # restart button
+            self.restart_button.visible = True
+        else:
+            # check if the level started or not
+            if not self.world.level_started:
+                self.begin_button.visible = True
+
+        # if a turret is selected then show the upgrade button\
+        if self.selected_turret:
+            # if a turret is selected then show the upgrade button
+            if self.selected_turret.upgrade_level < c.TURRET_LEVELS:
+                self.upgrade_button.visible = True
 
     def draw_ui(self, screen):
         # draw text:
-        self.draw_text(screen, str(self.health), self.text_font, "grey100", 0, 0)
-        self.draw_text(screen, str(self.money), self.text_font, "grey100", 0, 30)
-        self.draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 60)
+        draw_text(screen, str(self.health), self.text_font, "grey100", 0, 0)
+        draw_text(screen, str(self.money), self.text_font, "grey100", 0, 30)
+        draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 60)
 
         # draw buttons:
         self.upgrade_button.draw(screen)
@@ -91,11 +114,9 @@ class Player:
         if self.world.game_over:
             pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
             if self.world.game_outcome == -1:
-                self.draw_text(screen, "GAME OVER", self.large_font, "grey100", 310, 250)
+                draw_text(screen, "GAME OVER", self.large_font, "grey100", 310, 250)
             elif self.world.game_outcome == 1:
-                self.draw_text(screen, "YOU WIN", self.large_font, "grey100", 315, 250)
-            # restart button
-            self.restart_button.visible = True
+                draw_text(screen, "YOU WIN", self.large_font, "grey100", 315, 250)
 
     # Returns true if click has resulted in a successful action
     def handle_input(self, event):
@@ -131,21 +152,15 @@ class Player:
             cursor_rect = self.cursor_turret.get_rect()
             cursor_pos = pg.mouse.get_pos()
             cursor_rect.center = cursor_pos
-            self.cancel_button.visible = True
             if self.cancel_button.check_click(cursor_pos) or pg.mouse.get_pressed()[2] == 1:
                 self.placing_turrets = False
                 return True
 
-        # if a turret is selected then show the upgrade button\
-        if self.selected_turret:
-            # if a turret is selected then show the upgrade button
-            if self.selected_turret.upgrade_level < c.TURRET_LEVELS:
-                self.upgrade_button.visible = True
-                if self.upgrade_button.check_click(mouse_pos):
-                    if self.money >= c.UPGRADE_COST:
-                        self.money -= c.UPGRADE_COST
-                        self.selected_turret.upgrade()
-                        return True
+        if self.upgrade_button.check_click(mouse_pos):
+            if self.money >= c.UPGRADE_COST:
+                self.money -= c.UPGRADE_COST
+                self.selected_turret.upgrade()
+                return True
 
         # Check if mouse is on the game area
         if mouse_pos[0] < c.SCREEN_WIDHT and mouse_pos[1] < c.SCREEN_HEIGHT:
@@ -159,6 +174,7 @@ class Player:
                     return True
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
-                return True
+                if self.selected_turret is not None:
+                    return True
 
         return False

@@ -77,9 +77,7 @@ while True:
         enemy_group.update(player, world)
         turret_group.update(enemy_group, world)
 
-        # highlight selected turret
-        if player.selected_turret:
-            player.selected_turret.selected = True
+        player.update()
 
         ##########################
         # DRAWING SECTION
@@ -100,12 +98,7 @@ while True:
         player.draw_ui(screen)
 
         if not world.game_over:
-
-            # check if the level started or not
-            if not world.level_started:
-                player.begin_button.visible = True
-
-            else:
+            if world.level_started:
                 # Spawn enemies
                 if pg.time.get_ticks() - world.last_enemy_spawn > c.SPAWN_COOLDOWN:
                     if world.spawned_enemies < len(world.enemy_list):
