@@ -52,8 +52,6 @@ class World:
      """
     def __init__(self, screen, data, map_image):
         self.level = 3
-        self.health = c.HEALTH
-        self.money = c.MONEY
         self.game_speed = 1
         self.paths = []
         self.plots = []
