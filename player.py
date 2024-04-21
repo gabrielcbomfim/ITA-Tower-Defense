@@ -8,7 +8,8 @@ class Player:
     def __init__(self, turret_group, turret_spritesheets, world):
         self.placing_turrets = False
         self.selected_turret = None
-        self.game_speed = 1
+        self.restart = True
+        self.run = True
 
         self.health = c.HEALTH
         self.money = c.MONEY
@@ -24,12 +25,12 @@ class Player:
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 
         # Create buttons:
-        self.upgrade_button = Button(c.SCREEN_WIDHT + 5, 180, upgrade_turret_image)
-        self.cancel_button = Button(c.SCREEN_WIDHT + 30, 180, cancel_image)
-        self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image)
-        self.begin_button = Button(c.SCREEN_WIDHT + 60, 300, begin_image)
-        self.restart_button = Button(310, 300, restart_image)
-        self.fast_forward_button = Button(c.SCREEN_WIDHT + 60, 340, fast_forward_image)
+        self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
+        self.cancel_button = Button(c.SCREEN_WIDHT + 30, 240, cancel_image, False)
+        self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
+        self.begin_button = Button(c.SCREEN_WIDHT + 30, 360, begin_image)
+        self.restart_button = Button(310, 420, restart_image, False)
+        self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, False)
 
         self.cursor_turret = cursor_turret
         self.turret_group = turret_group
@@ -58,31 +59,71 @@ class Player:
 
     def draw_ui(self, screen):
         # draw buttons:
-        if self.turrent_button.draw(screen):
-            self.placing_turrets = True
-        # if placing turrents then show the cancel button as well
+        self.upgrade_button.draw(screen)
+        self.cancel_button.draw(screen)
+        self.turrent_button.draw(screen)
+        self.begin_button.draw(screen)
+        self.restart_button.draw(screen)
+        self.fast_forward_button.draw(screen)
+
+        # if placing turrents then show turret preview
         if self.placing_turrets:
             cursor_rect = self.cursor_turret.get_rect()
             cursor_pos = pg.mouse.get_pos()
             cursor_rect.center = cursor_pos
             if cursor_pos[0] <= c.SCREEN_WIDHT:
                 screen.blit(self.cursor_turret, cursor_rect)
-            if self.cancel_button.draw(screen) or pg.mouse.get_pressed()[2] == 1:
+
+    # Returns true if click has resulted in a successful action
+    def handle_input(self, event):
+        # Check if event is Mouse Click:
+        if not (event.type == pg.MOUSEBUTTONDOWN and event.button == 1):
+            return False
+
+        mouse_pos = pg.mouse.get_pos()
+
+        # Check buttons first
+        if self.turrent_button.check_click(mouse_pos):
+            self.placing_turrets = True
+            return True
+
+        if self.begin_button.check_click(mouse_pos):
+            self.world.level_started = True
+            return True
+
+        if self.fast_forward_button.check_click(mouse_pos):
+            if self.world.game_speed == 1:
+                self.world.game_speed = 2
+            else:
+                self.world.game_speed = 1
+            return True
+
+        if self.restart_button.check_click(mouse_pos):
+            self.restart = True
+            self.run = False
+            return True
+
+        # if placing turrents then show the cancel button as well
+        if self.placing_turrets:
+            cursor_rect = self.cursor_turret.get_rect()
+            cursor_pos = pg.mouse.get_pos()
+            cursor_rect.center = cursor_pos
+            self.cancel_button.visible = True
+            if self.cancel_button.check_click(cursor_pos) or pg.mouse.get_pressed()[2] == 1:
                 self.placing_turrets = False
+                return True
+
         # if a turret is selected then show the upgrade button\
         if self.selected_turret:
             # if a turret is selected then show the upgrade button
             if self.selected_turret.upgrade_level < c.TURRET_LEVELS:
-                if self.upgrade_button.draw(screen):
+                self.upgrade_button.visible = True
+                if self.upgrade_button.check_click(mouse_pos):
                     if self.money >= c.UPGRADE_COST:
                         self.money -= c.UPGRADE_COST
                         self.selected_turret.upgrade()
+                        return True
 
-    def handle_input(self, event):
-        # Check if is Mouse Click:
-        if not (event.type == pg.MOUSEBUTTONDOWN and event.button == 1):
-            return False
-        mouse_pos = pg.mouse.get_pos()
         # Check if mouse is on the game area
         if mouse_pos[0] < c.SCREEN_WIDHT and mouse_pos[1] < c.SCREEN_HEIGHT:
             # clear selected turrets
@@ -92,5 +133,9 @@ class Player:
             if self.placing_turrets:
                 if self.money >= c.BUY_COST:
                     self.create_turret(mouse_pos)
+                    return True
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
+                return True
+
+        return False

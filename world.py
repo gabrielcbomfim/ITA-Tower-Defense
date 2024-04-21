@@ -51,6 +51,9 @@ class World:
          image: A imagem do mapa.
      """
     def __init__(self, screen, data, map_image):
+        self.game_over = False
+        self.game_outcome = 0  # -1 is loss, 1 is win
+        self.level_started = False
         self.level = 3
         self.game_speed = 1
         self.paths = []
@@ -58,6 +61,7 @@ class World:
         self.level_data = data
         self.image = map_image
         self.enemy_list = []
+        self.last_enemy_spawn = pg.time.get_ticks()
         self.spawned_enemies = 0
         self.killed_enemies = 0
         self.missed_enemies = 0
