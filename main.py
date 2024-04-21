@@ -38,16 +38,6 @@ turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
-# load fonts for text on screen
-text_font = pg.font.SysFont("Consolas", 24, bold=True)
-large_font = pg.font.SysFont("Consolas", 36)
-
-
-# font for outputting text on screen
-def draw_text(text, font, text_col, x, y):
-    img = font.render(text, True, text_col)
-    screen.blit(img, (x, y))
-
 
 # Restart loop, only quits on pg.QUIT
 while True:
@@ -109,10 +99,6 @@ while True:
 
         player.draw_ui(screen)
 
-        draw_text(str(player.health), text_font, "grey100", 0, 0)
-        draw_text(str(player.money), text_font, "grey100", 0, 30)
-        draw_text(str(world.level), text_font, "grey100", 0, 60)
-
         if not world.game_over:
 
             # check if the level started or not
@@ -120,8 +106,6 @@ while True:
                 player.begin_button.visible = True
 
             else:
-                # speed up the game
-                player.fast_forward_button.visible = True
                 # Spawn enemies
                 if pg.time.get_ticks() - world.last_enemy_spawn > c.SPAWN_COOLDOWN:
                     if world.spawned_enemies < len(world.enemy_list):
@@ -139,15 +123,6 @@ while True:
                 world.last_enemy_spawn = pg.time.get_ticks()
                 world.reset_level()
                 world.process_enemies()
-
-        else:
-            pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
-            if world.game_outcome == -1:
-                draw_text("GAME OVER", large_font, "grey100", 310, 250)
-            elif world.game_outcome == 1:
-                draw_text("YOU WIN", large_font, "grey100", 315, 250)
-            # restart button
-            player.restart_button.visible = True
 
         # event handler
         for event in pg.event.get():

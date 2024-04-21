@@ -14,6 +14,9 @@ class Player:
         self.health = c.HEALTH
         self.money = c.MONEY
 
+        # load fonts for text on screen
+        self.text_font = pg.font.SysFont("Consolas", 24, bold=True)
+        self.large_font = pg.font.SysFont("Consolas", 36)
         # individual turret image for mouse cursor
         cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
         # Buttons images:
@@ -30,7 +33,7 @@ class Player:
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 360, begin_image)
         self.restart_button = Button(310, 420, restart_image, False)
-        self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, False)
+        self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, True, False)
 
         self.cursor_turret = cursor_turret
         self.turret_group = turret_group
@@ -57,7 +60,18 @@ class Player:
         for turret in self.turret_group:
             turret.selected = False
 
+    # function for outputting text on screen
+    def draw_text(self, screen, text, font, text_col, x, y):
+        img = font.render(text, True, text_col)
+        screen.blit(img, (x, y))
+
+
     def draw_ui(self, screen):
+        # draw text:
+        self.draw_text(screen, str(self.health), self.text_font, "grey100", 0, 0)
+        self.draw_text(screen, str(self.money), self.text_font, "grey100", 0, 30)
+        self.draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 60)
+
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
@@ -73,6 +87,15 @@ class Player:
             cursor_rect.center = cursor_pos
             if cursor_pos[0] <= c.SCREEN_WIDHT:
                 screen.blit(self.cursor_turret, cursor_rect)
+
+        if self.world.game_over:
+            pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
+            if self.world.game_outcome == -1:
+                self.draw_text(screen, "GAME OVER", self.large_font, "grey100", 310, 250)
+            elif self.world.game_outcome == 1:
+                self.draw_text(screen, "YOU WIN", self.large_font, "grey100", 315, 250)
+            # restart button
+            self.restart_button.visible = True
 
     # Returns true if click has resulted in a successful action
     def handle_input(self, event):
