@@ -54,18 +54,18 @@ class Turret(pg.sprite.Sprite):
     def update(self, enemy_group, world):
         #if target picked, play firing animation
         if self.target:
-            self.pick_target(enemy_group)
+            self.pick_target(enemy_group, world)
             if pg.time.get_ticks() - self.last_shot > (self.cooldown/world.game_speed):
-                self.play_animation()
+                self.play_animation(world)
         else:
             # search for new target once turret has cooled down
-                self.pick_target(enemy_group)
+            self.pick_target(enemy_group, world)
 
-    def play_animation(self):
+    def play_animation(self, world):
         #update image
         self.original_image = self.animation_list[self.frame_index]
         #check if enough time has passed since the last update
-        if pg.time.get_ticks() - self.update_time > c.ANIMATION_DELAY:
+        if pg.time.get_ticks() - self.update_time > (c.ANIMATION_DELAY / world.game_speed):
             self.update_time = pg.time.get_ticks()
             self.frame_index += 1
             #if the animation has run out then reset back to the start
@@ -75,7 +75,7 @@ class Turret(pg.sprite.Sprite):
                 self.last_shot = pg.time.get_ticks()
                 self.target = None
 
-    def pick_target(self, enemy_group):
+    def pick_target(self, enemy_group, world):
         #find an enemy to target
         x_dist = 0
         y_dist = 0
@@ -90,7 +90,7 @@ class Turret(pg.sprite.Sprite):
                     self.target = enemy
                     self.angle = math.degrees(math.atan2(-y_dist, x_dist))
                     # damage
-                    self.target.health -= c.DAMAGE
+                    self.target.health -= c.DAMAGE * world.game_speed
                     break
 
     def draw(self, surface):
