@@ -2,6 +2,7 @@ import pygame as pg
 from turret import Turret
 from button import Button
 from world import PlotStates
+from panel import Panel
 import constants as c
 
 
@@ -26,6 +27,10 @@ class Player:
         self.large_font = pg.font.SysFont("Consolas", 48)
         # individual turret image for mouse cursor
         cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
+
+        # Panel image:
+        panel_image = pg.image.load("./assets/buttons/panel.png").convert_alpha()
+
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
         cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
@@ -35,6 +40,7 @@ class Player:
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 
         # Create buttons:
+        self.panel = Panel(c.SCREEN_WIDHT + 30, 30, panel_image)
         self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
         self.cancel_button = Button(c.SCREEN_WIDHT + 30, 240, cancel_image, False)
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
@@ -97,6 +103,9 @@ class Player:
         draw_text(screen, str(self.health), self.text_font, "red", c.SCREEN_WIDHT/2, 0)
         draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
         draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
+
+        # draw panel:
+        self.panel.draw(screen)
 
         # draw buttons:
         self.upgrade_button.draw(screen)

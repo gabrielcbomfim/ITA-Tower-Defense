@@ -1,8 +1,8 @@
 class Panel:
-    def __init__(self, xrel, yrel, image, visible=True):
+    def __init__(self, x, y, image, visible=True):
         self.image = image
         self.rect = self.image.get_rect()
-        self.rect.topleft = (xrel, yrel)
+        self.rect.topleft = (x, y)
         self.visible = visible
 
     def draw(self, surface):
