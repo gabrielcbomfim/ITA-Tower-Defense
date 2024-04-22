@@ -22,8 +22,8 @@ class Player:
         self.money = c.MONEY
 
         # load fonts for text on screen
-        self.text_font = pg.font.SysFont("Consolas", 24, bold=True)
-        self.large_font = pg.font.SysFont("Consolas", 36)
+        self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
+        self.large_font = pg.font.SysFont("Consolas", 48)
         # individual turret image for mouse cursor
         cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
         # Buttons images:
@@ -94,9 +94,9 @@ class Player:
 
     def draw_ui(self, screen):
         # draw text:
-        draw_text(screen, str(self.health), self.text_font, "grey100", 0, 0)
-        draw_text(screen, str(self.money), self.text_font, "grey100", 0, 30)
-        draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 60)
+        draw_text(screen, str(self.health), self.text_font, "red", c.SCREEN_WIDHT/2, 0)
+        draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
+        draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
 
         # draw buttons:
         self.upgrade_button.draw(screen)
