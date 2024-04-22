@@ -1,6 +1,7 @@
 import pygame as pg
 from turret import Turret
 from button import Button
+from world import PlotStates
 import constants as c
 
 
@@ -47,12 +48,14 @@ class Player:
         self.world = world
 
     def create_turret(self, mouse_pos):
-        mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
-        mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
-        turret = Turret(self.turret_spritesheets, mouse_tile_x, mouse_tile_y)
-        self.turret_group.add(turret)
-        # deduct cost of turret
-        self.money -= c.BUY_COST
+        for plot in self.world.plots:
+            if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
+                turret = Turret(self.turret_spritesheets, plot.center()[0], plot.center()[1])
+                self.turret_group.add(turret)
+                # deduct cost of turret
+                self.money -= c.BUY_COST
+                plot.state = PlotStates.OCCUPIED
+                break
 
     def select_turret(self, mouse_pos):
         mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
@@ -168,9 +171,8 @@ class Player:
             self.selected_turret = None
             self.clear_selection()
 
-            if self.placing_turrets:
-                if self.money >= c.BUY_COST:
-                    self.create_turret(mouse_pos)
+            if self.placing_turrets and self.money >= c.BUY_COST:
+                if self.create_turret(mouse_pos):
                     return True
             else:
                 self.selected_turret = self.select_turret(mouse_pos)

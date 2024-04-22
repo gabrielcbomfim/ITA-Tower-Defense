@@ -4,6 +4,7 @@ import random
 import constants as c
 from enemy_data import ENEMY_SPAWN_DATA
 
+
 class PlotStates(Enum):
     """
     Um enum que serve para abstrair o estados de um lote
@@ -50,6 +51,7 @@ class World:
      Attributes:
          image: A imagem do mapa.
      """
+
     def __init__(self, screen, data, map_image):
         self.game_over = False
         self.game_outcome = 0  # -1 is loss, 1 is win
@@ -66,10 +68,8 @@ class World:
         self.killed_enemies = 0
         self.missed_enemies = 0
 
-        self.x_ratio = screen.get_width()/(data['width']*data['tilewidth'])
-        self.y_ratio = screen.get_height()/(data['height']*data['tileheight'])
-        self.process_data()
-
+        self.x_ratio = screen.get_width() / (data['width'] * data['tilewidth'])
+        self.y_ratio = screen.get_height() / (data['height'] * data['tileheight'])
 
     def process_data(self):
         """
@@ -83,6 +83,7 @@ class World:
                 for obj in layer["objects"]:
                     # Armazena as posições corrigidas dos lotes:
                     self.plots.append(Plot(obj, self.x_ratio, self.y_ratio))
+
     def process_waypoints(self, points, abs_x, abs_y):
         """
         Itera pelos waypoints para extrair sets individuais das coordenadas x e y
@@ -98,8 +99,6 @@ class World:
             waypoints.append((temp_x, temp_y))
         self.paths.append(waypoints)
 
-
-
     def draw(self, surface):
         """
          Desenha a imagem do mundo numa superfície.
@@ -113,12 +112,12 @@ class World:
         """
         Processa os inimigos do arquivo de dados
         """
-        enemies = ENEMY_SPAWN_DATA[self.level -1]
+        enemies = ENEMY_SPAWN_DATA[self.level - 1]
         for enemy_type in enemies:
             enemies_to_spawn = enemies[enemy_type]
             for enemy in range(enemies_to_spawn):
                 self.enemy_list.append(enemy_type)
-        #now randomize the list to shuffle the enemies
+        # now randomize the list to shuffle the enemies
         random.shuffle(self.enemy_list)
 
     def check_level_complete(self):
