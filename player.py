@@ -27,15 +27,17 @@ class PlacingStates(Enum):
 
 
 class Player:
-    def __init__(self, turret_group, world):
+    def __init__(self, turret_group, world, enemy_group):
         # Incializar o estado de placing como estado neutro:
         self.placing_state = PlacingStates.NOT_PLACING
         self.selected_turret = None
         self.restart = True
         self.run = True
+        self.enemy_group = enemy_group
 
         #Controle de habilidades:
-        self.in_viradao = False
+        self.viradao_state = 0
+        self.last_state_time = pg.time.get_ticks()
 
         self.i_count = 0
         self.i_list = []
@@ -130,7 +132,13 @@ class Player:
             turret.selected = False
             self.upgrade_button.visible = False
 
-    def update(self):
+    def update(self, world):
+        # Abilities Control:
+        if self.viradao_state == 1:
+            if (pg.time.get_ticks() - self.last_state_time >=
+                    (c.VIRADAO_TIME_1 + c.VIRADAO_TIME_2 + c.VIRADAO_TIME_3)/world.game_speed):
+                self.viradao_state = 0
+
         # highlight selected turret
         if self.selected_turret:
             self.selected_turret.selected = True
@@ -228,9 +236,12 @@ class Player:
 
         # Abilities:
 
-        if self.viradao_button.check_click(mouse_pos) and self.run:
+        if self.viradao_button.check_click(mouse_pos) and self.run and self.viradao_state == 0:
+            self.viradao_state = 1
             self.viradao_sound.play()
-            
+            self.change_health(-(c.VIRADAO_VIDA_PROPORCIONAL * self.max_health))
+            for enemy in self.enemy_group:
+                enemy.viradao()
             return True
 
         if self.begin_button.check_click(mouse_pos):

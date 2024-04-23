@@ -54,7 +54,7 @@ while True:
     turret_group = pg.sprite.Group()
 
     # Player
-    player = Player(turret_group, world)
+    player = Player(turret_group, world, enemy_group)
 
     # Game loop
     while player.run:
@@ -85,7 +85,7 @@ while True:
         enemy_group.update(player, world)
         turret_group.update(enemy_group, world)
 
-        player.update()
+        player.update(world)
 
         ##########################
         # DRAWING SECTION

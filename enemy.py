@@ -35,6 +35,7 @@ class Enemy(pg.sprite.Sprite):
         self.type = enemy_type
         self.health = ENEMY_DATA.get(enemy_type)["health"]
         self.speed = ENEMY_DATA.get(enemy_type)["speed"]
+        self.base_speed = ENEMY_DATA.get(enemy_type)["speed"]
         self.angle = 0
 
         # direction for the enemy
@@ -42,8 +43,9 @@ class Enemy(pg.sprite.Sprite):
         # nasce sempre para direita.
         self.direction = 2
 
-
-
+        # Abilities Control:
+        self.viradao_state = 0
+        self.last_state_time = pg.time.get_ticks()
 
         # self.original_image = images.get(enemy_type)
 
@@ -179,6 +181,8 @@ class Enemy(pg.sprite.Sprite):
         self.rotate(player, world)
         self.move(world)
         self.check_alive(player, world)
+        self.viradao_control(player, world)
+
 
     def check_alive(self, player, world):
         if self.health <= 0:
@@ -186,5 +190,25 @@ class Enemy(pg.sprite.Sprite):
             world.killed_enemies += 1
             self.kill()
 
+    def viradao_control(self, player, world):
+        if self.viradao_state == 1:
+            self.speed = self.base_speed/3
+            if pg.time.get_ticks() - self.last_state_time >= c.VIRADAO_TIME_1/world.game_speed:
+                self.last_state_time = pg.time.get_ticks()
+                self.viradao_state = 2
+        elif self.viradao_state == 2:
+            self.speed = 0.001
+            if pg.time.get_ticks() - self.last_state_time >= c.VIRADAO_TIME_2/world.game_speed:
+                self.last_state_time = pg.time.get_ticks()
+                self.viradao_state = 3
+        elif self.viradao_state == 3:
+            self.speed = self.base_speed/2
+            if pg.time.get_ticks() - self.last_state_time >= c.VIRADAO_TIME_3 / world.game_speed:
+                self.last_state_time = pg.time.get_ticks()
+                self.viradao_state = 0
+                self.speed = self.base_speed
 
+    def viradao(self):
+        self.last_state_time = pg.time.get_ticks()
+        self.viradao_state = 1
 
