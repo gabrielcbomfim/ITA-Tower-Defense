@@ -57,7 +57,7 @@ class World:
         self.game_outcome = 0  # -1 is loss, 1 is win
         self.level_started = False
         self.level = 3
-        self.game_speed = 1
+        self.game_speed = c.GAME_SPEED
         self.paths = []
         self.plots = []
         self.level_data = data

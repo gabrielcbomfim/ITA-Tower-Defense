@@ -2,9 +2,9 @@ ENEMY_SPAWN_DATA = [
   {
     #1
     "weak": 15,
-    "medium": 0,
-    "strong": 0,
-    "elite": 0
+    "medium": 5,
+    "strong": 5,
+    "elite": 1
   },
   {
     #2
@@ -17,8 +17,8 @@ ENEMY_SPAWN_DATA = [
     #3
     "weak": 20,
     "medium": 5,
-    "strong": 0,
-    "elite": 0
+    "strong": 5,
+    "elite": 5
   },
   {
     #4

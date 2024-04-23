@@ -24,10 +24,10 @@ map_image = pg.image.load("./assets/mapa/mapa4.png")
 map_image_resized = pg.transform.scale(map_image, (screen.get_width(), screen.get_height()))
 # Enemies:
 enemy_images = {
-    "weak": pg.image.load("./assets/enemies/enemy_1.png"),
-    "medium": pg.image.load("./assets/enemies/enemy_2.png"),
-    "strong": pg.image.load("./assets/enemies/enemy_3.png"),
-    "elite": pg.image.load("./assets/enemies/enemy_4.png")
+    "weak": pg.image.load("./assets/enemies/computador.png"),
+    "medium": pg.image.load("assets/enemies/paper.png"),
+    "strong": pg.image.load("./assets/enemies/airplane.png"),
+    "elite": pg.image.load("./assets/enemies/inferninho.png")
 }
 
 # turret spritesheets
