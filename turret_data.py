@@ -3,6 +3,7 @@ TURRET_GAGA_DATA = [
         # 1
         "range": 150,
         "cooldown": 200,
+        "buy_cost": 200
     },
     {
         # 2
@@ -26,6 +27,7 @@ TURRET_AULAO_DATA = [
         # 1
         "range": 150,
         "cooldown": 300,
+        "buy_cost": 200
     },
     {
         # 2

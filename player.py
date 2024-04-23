@@ -23,13 +23,14 @@ class PlacingStates(Enum):
     BOMBA = 4
     G = 5
     VIRADAO = 6
-    ENERGETICO = 7
+    PITBULL = 7
 
 
 
 class Player:
     def __init__(self, turret_group, world):
-        self.placing_turrets = False
+        # Incializar o estado de placing como estado neutro:
+        self.placing_state = PlacingStates.NOT_PLACING
         self.selected_turret = None
         self.restart = True
         self.run = True
@@ -45,8 +46,12 @@ class Player:
         # load fonts for text on screen
         self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
         self.large_font = pg.font.SysFont("Consolas", 48)
-        # individual turret image for mouse cursor
-        cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
+
+        # Preview Cursor Images:
+        self.cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
+        self.cursor_bomba = pg.image.load("./assets/abilities/bomba.png").convert_alpha()
+        self.cursor_G = pg.image.load("./assets/abilities/G.png").convert_alpha()
+        self.cursor_pitbull = pg.image.load('./assets/abilities/pitbull.png').convert_alpha()
 
         # Panel image:
         panel_image = pg.image.load("./assets/buttons/panel_image.png").convert_alpha()
@@ -74,7 +79,6 @@ class Player:
         self.restart_button = Button(310, 420, restart_image, False)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, True, False)
 
-        self.cursor_turret = cursor_turret
         self.turret_group = turret_group
         self.world = world
 
@@ -85,12 +89,23 @@ class Player:
     def create_turret(self, mouse_pos):
         for plot in self.world.plots:
             if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
-                turret = Turrets.TurretAulao(plot.center()[0], plot.center()[1])
-                self.turret_group.add(turret)
-                # deduct cost of turret
-                self.money -= c.BUY_COST
-                plot.state = PlotStates.OCCUPIED
-                break
+                if self.placing_state == PlacingStates.TORRE_AULAO:
+                    turret = Turrets.TurretAulao(plot.center()[0], plot.center()[1])
+                elif self.placing_state == PlacingStates.TORRE_DO_GAGA:
+                    turret = Turrets.TurretGaga(plot.center()[0], plot.center()[1])
+                    #Depois tera torre do rancho
+                else:
+                    return False
+
+                if self.money >= turret.buy_cost:
+                    self.turret_group.add(turret)
+                    # deduct cost of turret
+                    self.money -= c.BUY_COST
+                    plot.state = PlotStates.OCCUPIED
+                    return True
+                else:
+                    return False
+        return False
 
     def select_turret(self, mouse_pos):
         for turret in self.turret_group:
@@ -108,7 +123,7 @@ class Player:
         if self.selected_turret:
             self.selected_turret.selected = True
 
-        if self.placing_turrets:
+        if self.placing_state != PlacingStates.NOT_PLACING:
             self.cancel_button.visible = True
 
         if self.world.game_over:
@@ -157,12 +172,21 @@ class Player:
         self.fast_forward_button.draw(screen)
 
         # if placing turrents then show turret preview
-        if self.placing_turrets:
+        if self.placing_state != PlacingStates.NOT_PLACING:
             cursor_rect = self.cursor_turret.get_rect()
             cursor_pos = pg.mouse.get_pos()
             cursor_rect.center = cursor_pos
+
+            # Escolha do cursor preview:
+            switch_case_cursor = {
+                PlacingStates.TORRE_AULAO: self.cursor_turret,
+                PlacingStates.G: self.cursor_G,
+                PlacingStates.BOMBA: self.cursor_bomba,
+                PlacingStates.PITBULL: self.cursor_pitbull
+            }
+            cursor_preview = switch_case_cursor[self.placing_state]
             if cursor_pos[0] <= c.SCREEN_WIDHT:
-                screen.blit(self.cursor_turret, cursor_rect)
+                screen.blit(cursor_preview, cursor_rect)
 
         if self.world.game_over:
             pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
@@ -180,8 +204,9 @@ class Player:
         mouse_pos = pg.mouse.get_pos()
 
         # Check buttons first
+        #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
-            self.placing_turrets = True
+            self.placing_state = PlacingStates.TORRE_AULAO
             return True
 
         if self.begin_button.check_click(mouse_pos):
@@ -203,13 +228,13 @@ class Player:
             self.run = False
             return True
 
-        # if placing turrents then show the cancel button as well
-        if self.placing_turrets:
+        # if placing turrents or abilities then show the cancel button as well
+        if self.placing_state != PlacingStates.NOT_PLACING:
             cursor_rect = self.cursor_turret.get_rect()
             cursor_pos = pg.mouse.get_pos()
             cursor_rect.center = cursor_pos
             if self.cancel_button.check_click(cursor_pos) or pg.mouse.get_pressed()[2] == 1:
-                self.placing_turrets = False
+                self.placing_state = PlacingStates.NOT_PLACING
                 return True
 
         if self.upgrade_button.check_click(mouse_pos):
@@ -224,9 +249,8 @@ class Player:
             self.selected_turret = None
             self.clear_selection()
 
-            if self.placing_turrets and self.money >= c.BUY_COST:
-                if self.create_turret(mouse_pos):
-                    return True
+            if self.create_turret(mouse_pos):
+                return True
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
                 if self.selected_turret is not None:

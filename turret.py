@@ -1,6 +1,7 @@
 import pygame as pg
 import math
 import constants as c
+import turret_data
 import turret_data as data
 import random
 from button import Button
@@ -128,6 +129,8 @@ class TurretRancho(Turret) :
 
 class TurretAulao(Turret):
     def __init__(self, x, y):
+        self.buy_cost = turret_data.TURRET_AULAO_DATA[0]["buy_cost"]
+
         turret_spritesheets = []
         for i in range(1, c.TURRET_LEVELS + 1):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{i}.png").convert_alpha())
@@ -155,6 +158,8 @@ class TurretAulao(Turret):
 class TurretGaga(Turret):
 
     def __init__(self, x, y):
+        self.buy_cost = turret_data.TURRET_GAGA_DATA[0]["buy_cost"]
+
         turret_spritesheets = []
         for i in range(1, c.TURRET_LEVELS + 1):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretGaga/turret_{i}.png").convert_alpha())
