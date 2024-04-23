@@ -23,6 +23,10 @@ class Player:
         self.i_list = []
         self.money = c.MONEY
 
+        # Saude para
+        self.max_health = 100
+        self.health = 100
+
         # load fonts for text on screen
         self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
         self.large_font = pg.font.SysFont("Consolas", 48)
@@ -106,6 +110,8 @@ class Player:
 
     def add_i(self):
         self.i_count += 1
+        self.max_health -= 15
+        self.health = min(self.health, self.max_health)
 
 
     def draw_i(self, screen):
@@ -113,7 +119,7 @@ class Player:
             i_rect = self.i_image.get_rect()
             i_rect.topleft = (c.SCREEN_WIDHT + 80 * i + 20, 930)
             screen.blit(self.i_image, i_rect)
-        draw_text(screen, str(self.i_count), self.text_font, "red", c.SCREEN_WIDHT / 2, 0)
+
 
     def draw_ui(self, screen):
         # draw panel:
@@ -121,6 +127,7 @@ class Player:
 
         # draw text:
         self.draw_i(screen)
+        draw_text(screen, str(self.health)+'/'+str(self.max_health), self.text_font, "red", c.SCREEN_WIDHT / 2, 0)
         draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
         draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
 
