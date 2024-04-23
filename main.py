@@ -4,6 +4,7 @@ from enemy import Enemy
 from world import World
 from player import Player
 import constants as c
+import random
 
 # initialise pygame
 pg.init()
@@ -15,6 +16,7 @@ clock = pg.time.Clock()
 screen = pg.display.set_mode((1920, 1080), pg.SCALED | pg.FULLSCREEN)
 
 pg.display.set_caption("ITAwer Defense")
+
 
 # load images
 # Map:
@@ -38,9 +40,11 @@ turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
-
 # Restart loop, only quits on pg.QUIT
 while True:
+
+    update_time = 0
+    path_aleatorio = 5
 
     # Create world
     world = World(screen, world_data, map_image_resized)
@@ -74,6 +78,12 @@ while True:
                 world.game_over = True
 
         # update groups
+        if not world.level_started:
+            update_time = pg.time.get_ticks()
+        if pg.time.get_ticks() - update_time > (c.PATH_RELOADO_TIME / world.game_speed):
+            update_time = pg.time.get_ticks()
+            path_aleatorio = random.randint(1, len(world.paths) - 1)
+
         enemy_group.update(player, world)
         turret_group.update(enemy_group, world)
 
@@ -87,8 +97,9 @@ while True:
         # draw level
         world.draw(screen)
 
+
         # draw enemy path
-        pg.draw.lines(screen, "grey0", False, world.paths[5])
+        pg.draw.lines(screen, "grey0", False, world.paths[path_aleatorio])
 
         # Draw groups
         enemy_group.draw(screen)
@@ -103,7 +114,7 @@ while True:
                 if pg.time.get_ticks() - world.last_enemy_spawn > c.SPAWN_COOLDOWN:
                     if world.spawned_enemies < len(world.enemy_list):
                         enemy_type = world.enemy_list[world.spawned_enemies]
-                        enemy = Enemy(enemy_type, world.paths[5], enemy_images)
+                        enemy = Enemy(enemy_type, world.paths[path_aleatorio], enemy_images)
                         enemy_group.add(enemy)
                         world.spawned_enemies += 1
                         world.last_enemy_spawn = pg.time.get_ticks()
