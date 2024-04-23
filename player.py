@@ -78,6 +78,10 @@ class Player:
         self.turret_group = turret_group
         self.world = world
 
+    def change_health(self, delta_health):
+        self.health += delta_health
+        self.health = min(self.health, self.max_health)
+
     def create_turret(self, mouse_pos):
         for plot in self.world.plots:
             if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
@@ -124,7 +128,7 @@ class Player:
     def add_i(self):
         self.i_count += 1
         self.max_health -= 15
-        self.health = min(self.health, self.max_health)
+        self.change_health(0)
 
 
     def draw_i(self, screen):
