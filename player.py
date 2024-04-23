@@ -223,7 +223,7 @@ class Player:
         # Towers:
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
-            self.placing_state = PlacingStates.TORRE_RANCHO
+            self.placing_state = PlacingStates.TORRE_DO_GAGA
             return True
 
         # Abilities:

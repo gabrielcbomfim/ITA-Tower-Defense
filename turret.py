@@ -203,6 +203,6 @@ class TurretGaga(Turret):
                     self.angle = math.degrees(math.atan2(-y_dist, x_dist))
                     break
 
-    def action(self):
+    def action(self, enemy_group):
         if self.target:
             self.target.health -= self.damage
