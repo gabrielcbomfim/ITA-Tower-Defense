@@ -37,6 +37,10 @@ class Enemy(pg.sprite.Sprite):
         self.speed = ENEMY_DATA.get(enemy_type)["health"]
         self.angle = 0
 
+        # direction for the enemy
+        # 0 = down, 1 = up, 3 = right, 4 = left
+        # nasce sempre para direita.
+        self.direction = 0
 
 
 
@@ -47,7 +51,8 @@ class Enemy(pg.sprite.Sprite):
         # animations variables
         self.sprite_sheet = images.get(enemy_type)
 
-        self.animation_list = self.load_images(self.sprite_sheet)
+        self.animation_list, self.animation_lists = self.load_images(self.sprite_sheet)
+
         self.frame_index = 0
         self.update_time = pg.time.get_ticks()
 
@@ -60,6 +65,7 @@ class Enemy(pg.sprite.Sprite):
         sprite_width = sprite_sheet.get_width()
         sprite_height = sprite_sheet.get_height()
         animation_list = []
+        animation_lists = []
 
         if self.type == "weak":
             sprite_width = sprite_width/5
@@ -83,17 +89,29 @@ class Enemy(pg.sprite.Sprite):
             sprite_height = sprite_height*2
             sprite_sheet = pg.transform.scale(sprite_sheet, (sprite_width, sprite_height))
             animation_steps = 4
-            for x in range(animation_steps):
-                temp_img = sprite_sheet.subsurface(x * sprite_width/4, 0, sprite_width/4, sprite_height/4)
-                animation_list.append(temp_img)
+            for y in range(4):
+                animation_list = []
+                for x in range(animation_steps):
+                    temp_img = sprite_sheet.subsurface(x * sprite_width/4, y * sprite_height/4, sprite_width/4, sprite_height/4)
+                    animation_list.append(temp_img)
+                animation_lists.append(animation_list)
+            animation_list = animation_lists[self.direction]
+        return animation_list, animation_lists
 
 
-
-
-        return animation_list
     def play_animation(self, world):
+        if self.type == "elite":
+            if self.direction == 0:
+                self.animation_list = self.animation_lists[0]
+            elif self.direction == 1:
+                self.animation_list = self.animation_lists[1]
+            elif self.direction == 2:
+                self.animation_list = self.animation_lists[2]
+            elif self.direction == 3:
+                self.animation_list = self.animation_lists[3]
+
         #update image
-        self.original_image = self.animation_list[self.frame_index]
+        self.image = self.animation_list[self.frame_index]
         #check if enough time has passed since the last update
         if pg.time.get_ticks() - self.update_time > (c.ANIMATION_ENEMY_DELAY / world.game_speed):
             self.update_time = pg.time.get_ticks()
@@ -130,15 +148,25 @@ class Enemy(pg.sprite.Sprite):
         dist = self.target - self.pos
         # use distance to calculate the angle
         self.angle = math.degrees(math.atan2(-dist[1], dist[0]))
-
         # rotate image and update rectangle
-        self.image = pg.transform.rotate(self.animation_list[self.frame_index], self.angle-90)
+
+        if self.type == "elite":
+            if self.angle < 45 and self.angle > -45:
+                self.direction = 3
+            elif self.angle < 135 and self.angle > 45:
+                self.direction = 0
+            elif self.angle < -135 or self.angle > 135:
+                self.direction = 1
+            elif self.angle < -45 and self.angle > -135:
+                self.direction = 2
+        else:
+            self.image = pg.transform.rotate(self.animation_list[self.frame_index], self.angle-90)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
     def update(self, player, world):
-        self.play_animation(world)
         self.rotate(player, world)
+        self.play_animation(world)
         self.move(world)
         self.check_alive(player, world)
 
