@@ -3,6 +3,7 @@ import turret as Turrets
 from button import Button
 from world import PlotStates
 from panel import Panel
+from enum import Enum
 import constants as c
 
 
@@ -10,6 +11,20 @@ import constants as c
 def draw_text(screen, text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
+
+class PlacingStates(Enum):
+    """
+    Um enum que serve para abstrair o estados de colocar coisas (habilidades e torres)
+    """
+    NOT_PLACING = 0
+    TORRE_DO_GAGA = 1
+    TORRE_AULAO = 2
+    TORRE_RANCHO = 3
+    BOMBA = 4
+    G = 5
+    VIRADAO = 6
+    ENERGETICO = 7
+
 
 
 class Player:
