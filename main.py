@@ -69,7 +69,7 @@ while True:
 
         if not world.game_over:
             # check if player has lost
-            if player.health <= 0:
+            if player.i_count > c.I_LIMIT:
                 world.game_outcome = -1
                 world.game_over = True
             # check if player has won

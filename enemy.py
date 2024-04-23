@@ -141,7 +141,7 @@ class Enemy(pg.sprite.Sprite):
             self.movement = self.target - self.pos
         else:
             self.kill()  # remove instantiate the enemy from screen
-            player.health -= 1
+            player.add_i()
             world.missed_enemies += 1
 
         # calculate distane to next waypoint

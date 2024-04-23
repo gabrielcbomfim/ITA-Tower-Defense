@@ -19,7 +19,8 @@ class Player:
         self.restart = True
         self.run = True
 
-        self.health = c.HEALTH
+        self.i_count = 0
+        self.i_list = []
         self.money = c.MONEY
 
         # load fonts for text on screen
@@ -31,6 +32,9 @@ class Player:
         # Panel image:
         panel_image = pg.image.load("./assets/buttons/panel_image.png").convert_alpha()
 
+        # I image:
+        i_image = pg.image.load("./assets/buttons/I.png").convert_alpha()
+
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
         cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
@@ -39,8 +43,14 @@ class Player:
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 
-        # Create buttons:
+
+        # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
+
+        # I image:
+        self.i = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
+
+        # Create buttons:
         self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
         self.cancel_button = Button(c.SCREEN_WIDHT + 30, 240, cancel_image, False)
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
@@ -98,9 +108,18 @@ class Player:
             if self.selected_turret.upgrade_level < c.TURRET_LEVELS:
                 self.upgrade_button.visible = True
 
+    def add_i(self):
+
+        self.i_count += 1
+
+    def draw_i(self, screen):
+        for i in self.i_list:
+            i.blit(self.image, self.rect)
+        draw_text(screen, str(self.i_count), self.text_font, "red", c.SCREEN_WIDHT / 2, 0)
+
     def draw_ui(self, screen):
         # draw text:
-        draw_text(screen, str(self.health), self.text_font, "red", c.SCREEN_WIDHT/2, 0)
+        self.draw_i(screen)
         draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
         draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
 
