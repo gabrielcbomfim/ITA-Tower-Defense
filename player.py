@@ -93,7 +93,8 @@ class Player:
                     turret = Turrets.TurretAulao(plot.center()[0], plot.center()[1])
                 elif self.placing_state == PlacingStates.TORRE_DO_GAGA:
                     turret = Turrets.TurretGaga(plot.center()[0], plot.center()[1])
-                    #Depois tera torre do rancho
+                elif self.placing_state == PlacingStates.TORRE_RANCHO:
+                    turret = Turrets.TurretRancho(plot.center()[0], plot.center()[1])
                 else:
                     return False
 
@@ -109,7 +110,7 @@ class Player:
 
     def select_turret(self, mouse_pos):
         for turret in self.turret_group:
-            if abs(turret.tile_x - mouse_pos[0]) <= 20 and abs(turret.tile_y - mouse_pos[1]) <= 20:
+            if abs(turret.x - mouse_pos[0]) <= 20 and abs(turret.y - mouse_pos[1]) <= 20:
                 turret.selected = True
                 return turret
 
@@ -180,6 +181,8 @@ class Player:
             # Escolha do cursor preview:
             switch_case_cursor = {
                 PlacingStates.TORRE_AULAO: self.cursor_turret,
+                PlacingStates.TORRE_RANCHO: self.cursor_turret,
+                PlacingStates.TORRE_DO_GAGA: self.cursor_turret,
                 PlacingStates.G: self.cursor_G,
                 PlacingStates.BOMBA: self.cursor_bomba,
                 PlacingStates.PITBULL: self.cursor_pitbull
@@ -206,7 +209,7 @@ class Player:
         # Check buttons first
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
-            self.placing_state = PlacingStates.TORRE_AULAO
+            self.placing_state = PlacingStates.TORRE_RANCHO
             return True
 
         if self.begin_button.check_click(mouse_pos):

@@ -9,6 +9,7 @@ class Turret(pg.sprite.Sprite):
     def __init__(self, sprite_sheets, x, y, specific_data):
         pg.sprite.Sprite.__init__(self)
         self.upgrade_level = 1
+        self.buy_cost = specific_data[self.upgrade_level-1]["buy_cost"]
         self.range = specific_data[self.upgrade_level-1]["range"]
         self.cooldown = specific_data[self.upgrade_level-1]["cooldown"]
         self.last_action = pg.time.get_ticks()
@@ -97,7 +98,7 @@ class TurretRancho(Turret) :
         for i in range(1, c.TURRET_LEVELS + 1):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretRancho/turret_{i}.png").convert_alpha())
         self.sprite_sheets = turret_spritesheets
-        super().__init__(self.sprite_sheets, x, y, data.TURRET_AULAO_DATA)
+        super().__init__(self.sprite_sheets, x, y, data.TURRET_RANCHO_DATA)
         self.food = None
         self.food_type = None
 
@@ -105,7 +106,7 @@ class TurretRancho(Turret) :
         # TODO
         # Criar sprite de foods
         sprite_food = []
-        for i in range(1, c.TURRET_LEVELS + 1):
+        for i in range(1, 3):
             sprite_food.append(pg.image.load(f"./assets/turrets/TurretRancho/food_{i}.png").convert_alpha())
         self.food_type = random.randint(0, 1)
         self.food = Button(self.x + 10, self.y + 10, sprite_food[self.food_type])
@@ -129,8 +130,6 @@ class TurretRancho(Turret) :
 
 class TurretAulao(Turret):
     def __init__(self, x, y):
-        self.buy_cost = turret_data.TURRET_AULAO_DATA[0]["buy_cost"]
-
         turret_spritesheets = []
         for i in range(1, c.TURRET_LEVELS + 1):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{i}.png").convert_alpha())
@@ -158,8 +157,6 @@ class TurretAulao(Turret):
 class TurretGaga(Turret):
 
     def __init__(self, x, y):
-        self.buy_cost = turret_data.TURRET_GAGA_DATA[0]["buy_cost"]
-
         turret_spritesheets = []
         for i in range(1, c.TURRET_LEVELS + 1):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretGaga/turret_{i}.png").convert_alpha())
