@@ -29,7 +29,7 @@ class Player:
         cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
 
         # Panel image:
-        panel_image = pg.image.load("./assets/buttons/panel.png").convert_alpha()
+        panel_image = pg.image.load("./assets/buttons/panel_image.png").convert_alpha()
 
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
