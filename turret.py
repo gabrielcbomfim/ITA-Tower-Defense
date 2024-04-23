@@ -2,22 +2,21 @@ import pygame as pg
 import math
 import constants as c
 import turret_data as data
+import random
+from button import Button
 class Turret(pg.sprite.Sprite):
-    def __init__(self, sprite_sheets, tile_x, tile_y, specific_data):
+    def __init__(self, sprite_sheets, x, y, specific_data):
         pg.sprite.Sprite.__init__(self)
         self.upgrade_level = 1
         self.range = specific_data[self.upgrade_level-1]["range"]
         self.cooldown = specific_data[self.upgrade_level-1]["cooldown"]
-        self.last_shot = pg.time.get_ticks()
+        self.last_action = pg.time.get_ticks()
         self.selected = False
         self.specific_data = specific_data
 
-        #position variables
-        self.tile_x = tile_x
-        self.tile_y = tile_y
         # calculate center coordinates
-        self.x = (self.tile_x+0.5)
-        self.y = (self.tile_y+0.5)
+        self.x = (x+0.5)
+        self.y = (y+0.5)
 
         # animations variables
         self.sprite_sheets = sprite_sheets
@@ -46,8 +45,8 @@ class Turret(pg.sprite.Sprite):
         #extract images from sprite sheets
         size = sprite_sheet.get_height()
         animation_list = []
-        for x in range(c.ANIMATION_STEPS):
-            temp_img = sprite_sheet.subsurface(x * size, 0, size, size)
+        for i in range(c.ANIMATION_STEPS):
+            temp_img = sprite_sheet.subsurface(i * size, 0, size, size)
             animation_list.append(temp_img)
         return animation_list
 
@@ -62,7 +61,7 @@ class Turret(pg.sprite.Sprite):
             if self.frame_index >= len(self.animation_list):
                 self.frame_index = 0
                 # record compleded time and clear target so cooldown can start
-                self.last_shot = pg.time.get_ticks()
+                self.last_action = pg.time.get_ticks()
                 self.target = None
 
     def draw(self, surface):
@@ -90,18 +89,55 @@ class Turret(pg.sprite.Sprite):
         self.range_rect = self.range_image.get_rect()
         self.range_rect.center = self.rect.center
 
-class TurretAulao(Turret):
-    def __init__(self, tile_x, tile_y):
+class TurretRancho(Turret) :
+
+    def __init__(self, x, y):
         turret_spritesheets = []
-        for x in range(1, c.TURRET_LEVELS + 1):
-            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{x}.png").convert_alpha())
+        for i in range(1, c.TURRET_LEVELS + 1):
+            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretRancho/turret_{i}.png").convert_alpha())
         self.sprite_sheets = turret_spritesheets
-        super().__init__(self.sprite_sheets, tile_x, tile_y, data.TURRET_AULAO_DATA)
+        super().__init__(self.sprite_sheets, x, y, data.TURRET_AULAO_DATA)
+        self.food = None
+        self.food_type = None
+
+    def create_food(self):
+        # TODO
+        # Criar sprite de foods
+        sprite_food = []
+        for i in range(1, c.TURRET_LEVELS + 1):
+            sprite_food.append(pg.image.load(f"./assets/turrets/TurretRancho/food_{i}.png").convert_alpha())
+        self.food_type = random.randint(0, 1)
+        self.food = Button(self.x + 10, self.y + 10, sprite_food[self.food_type])
+
+    def update(self, enemy_group, world):
+        # TODO
+        # Criar dados de cooldown da torre rancho
+        if not world.level_started:
+            self.last_action = pg.time.get_ticks()
+        if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
+            self.create_food()
+
+    def eat_food(self, player, mouse_pos):
+        if self.food is not None:
+            if self.food.check_click(mouse_pos):
+                if self.food_type:
+                   player.change_health(-10)
+                else:
+                    player.change_health(15)
+
+
+class TurretAulao(Turret):
+    def __init__(self, x, y):
+        turret_spritesheets = []
+        for i in range(1, c.TURRET_LEVELS + 1):
+            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{i}.png").convert_alpha())
+        self.sprite_sheets = turret_spritesheets
+        super().__init__(self.sprite_sheets, x, y, data.TURRET_AULAO_DATA)
 
 
     def update(self, enemy_group, world):
         #if target picked, play firing animation
-        if pg.time.get_ticks() - self.last_shot > (self.cooldown / world.game_speed):
+        if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
             self.play_animation(world)
 
         for enemy in enemy_group:
@@ -111,24 +147,26 @@ class TurretAulao(Turret):
                 dist = math.sqrt(x_dist ** 2 + y_dist ** 2)
                 if dist < self.range:
                     # damage
+                    # TODO
+                    # ajustar 0.5 (dano da torre em area)
                     enemy.health -= 0.5 * world.game_speed
 
 
 class TurretGaga(Turret):
 
-    def __init__(self, tile_x, tile_y):
+    def __init__(self, x, y):
         turret_spritesheets = []
-        for x in range(1, c.TURRET_LEVELS + 1):
-            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretGaga/turret_{x}.png").convert_alpha())
+        for i in range(1, c.TURRET_LEVELS + 1):
+            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretGaga/turret_{i}.png").convert_alpha())
         self.sprite_sheets = turret_spritesheets
-        super().__init__(self.sprite_sheets, tile_x, tile_y, data.TURRET_GAGA_DATA)
+        super().__init__(self.sprite_sheets, x, y, data.TURRET_GAGA_DATA)
         self.target = None
 
     def update(self, enemy_group, world):
         #if target picked, play firing animation
         if self.target:
             self.pick_target(enemy_group, world)
-            if pg.time.get_ticks() - self.last_shot > (self.cooldown/world.game_speed):
+            if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
                 self.play_animation(world)
         else:
             # search for new target once turret has cooled down
