@@ -6,11 +6,11 @@ import turret_data as data
 import random
 from button import Button
 
-
 class Turret(pg.sprite.Sprite):
     def __init__(self, sprite_sheets, x, y, specific_data):
         pg.sprite.Sprite.__init__(self)
         self.upgrade_level = 1
+        self.damage = specific_data[self.upgrade_level - 1]["damage"]
         self.buy_cost = specific_data[self.upgrade_level - 1]["buy_cost"]
         self.range = specific_data[self.upgrade_level - 1]["range"]
         self.cooldown = specific_data[self.upgrade_level - 1]["cooldown"]
@@ -54,7 +54,10 @@ class Turret(pg.sprite.Sprite):
             animation_list.append(temp_img)
         return animation_list
 
-    def play_animation(self, world):
+    def action(self, enemy_group):
+        pass
+
+    def play_animation(self, world, enemy_group):
         # update image
         self.original_image = self.animation_list[self.frame_index]
         # check if enough time has passed since the last update
@@ -66,6 +69,7 @@ class Turret(pg.sprite.Sprite):
                 self.frame_index = 0
                 # record compleded time and clear target so cooldown can start
                 self.last_action = pg.time.get_ticks()
+                self.action(enemy_group)
                 self.target = None
 
     def draw(self, surface):
@@ -151,18 +155,20 @@ class TurretAulao(Turret):
     def update(self, enemy_group, world):
         # if target picked, play firing animation
         if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
-            self.play_animation(world)
+            self.play_animation(world, enemy_group)
 
+    def action(self, enemy_group):
         for enemy in enemy_group:
             if enemy.health > 0:
                 x_dist = enemy.pos[0] - self.x
                 y_dist = enemy.pos[1] - self.y
                 dist = math.sqrt(x_dist ** 2 + y_dist ** 2)
+
                 if dist < self.range:
                     # damage
                     # TODO
                     # ajustar 0.5 (dano da torre em area)
-                    enemy.health -= 0.5 * world.game_speed
+                    enemy.health -= self.damage
 
 
 class TurretGaga(Turret):
@@ -180,7 +186,7 @@ class TurretGaga(Turret):
         if self.target:
             self.pick_target(enemy_group, world)
             if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
-                self.play_animation(world)
+                self.play_animation(world, enemy_group)
         else:
             # search for new target once turret has cooled down
             self.pick_target(enemy_group, world)
@@ -195,6 +201,8 @@ class TurretGaga(Turret):
                 if dist < self.range:
                     self.target = enemy
                     self.angle = math.degrees(math.atan2(-y_dist, x_dist))
-                    # damage
-                    self.target.health -= c.DAMAGE * world.game_speed
                     break
+
+    def action(self):
+        if self.target:
+            self.target.health -= self.damage
