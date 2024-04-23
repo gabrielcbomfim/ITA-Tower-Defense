@@ -33,7 +33,7 @@ class Player:
         panel_image = pg.image.load("./assets/buttons/panel_image.png").convert_alpha()
 
         # I image:
-        i_image = pg.image.load("./assets/buttons/I.png").convert_alpha()
+        self.i_image = pg.image.load("./assets/buttons/I.png").convert_alpha()
 
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
@@ -46,9 +46,6 @@ class Player:
 
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
-
-        # I image:
-        self.i = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
 
         # Create buttons:
         self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
@@ -108,22 +105,24 @@ class Player:
                 self.upgrade_button.visible = True
 
     def add_i(self):
-
         self.i_count += 1
 
+
     def draw_i(self, screen):
-        for i in self.i_list:
-            i.blit(self.image, self.rect)
+        for i in range(min(self.i_count, c.I_LIMIT)):
+            i_rect = self.i_image.get_rect()
+            i_rect.topleft = (c.SCREEN_WIDHT + 80 * i + 20, 930)
+            screen.blit(self.i_image, i_rect)
         draw_text(screen, str(self.i_count), self.text_font, "red", c.SCREEN_WIDHT / 2, 0)
 
     def draw_ui(self, screen):
+        # draw panel:
+        self.panel.draw(screen)
+
         # draw text:
         self.draw_i(screen)
         draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
         draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
-
-        # draw panel:
-        self.panel.draw(screen)
 
         # draw buttons:
         self.upgrade_button.draw(screen)
