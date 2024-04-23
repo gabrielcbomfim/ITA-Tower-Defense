@@ -101,9 +101,6 @@ class Enemy(pg.sprite.Sprite):
             #if the animation has run out then reset back to the start
             if self.frame_index >= len(self.animation_list):
                 self.frame_index = 0
-                # record compleded time and clear target so cooldown can start
-                self.last_shot = pg.time.get_ticks()
-                self.target = None
 
     def move(self, world):
         # calculate distance to target
@@ -150,22 +147,6 @@ class Enemy(pg.sprite.Sprite):
             player.money += c.KILL_REWARD
             world.killed_enemies += 1
             self.kill()
-
-class Lab(Enemy):
-    def __init__(self, waypoints, images):
-        super().__init__("weak", waypoints, images)
-
-class Prova(Enemy):
-    def __init__(self, waypoints, images):
-        super().__init__("medium", waypoints, images)
-
-class Exame(Enemy):
-    def __init__(self, waypoints, images):
-        super().__init__("strong", waypoints, images)
-
-class Inferninho(Enemy):
-    def __init__(self, waypoints, images):
-        super().__init__("elite", waypoints, images)
 
 
 
