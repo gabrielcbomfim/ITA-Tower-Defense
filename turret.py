@@ -14,6 +14,7 @@ class Turret(pg.sprite.Sprite):
         self.buy_cost = specific_data[self.upgrade_level - 1]["buy_cost"]
         self.range = specific_data[self.upgrade_level - 1]["range"]
         self.cooldown = specific_data[self.upgrade_level - 1]["cooldown"]
+        animation_steps = specific_data[self.upgrade_level - 1]["animation_steps"]
         self.last_action = pg.time.get_ticks()
         self.selected = False
         self.specific_data = specific_data
@@ -24,7 +25,7 @@ class Turret(pg.sprite.Sprite):
 
         # animations variables
         self.sprite_sheets = sprite_sheets
-        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
+        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1], animation_steps)
         self.frame_index = 0
         self.update_time = pg.time.get_ticks()
 
@@ -44,11 +45,11 @@ class Turret(pg.sprite.Sprite):
         self.range_rect = self.range_image.get_rect()
         self.range_rect.center = self.rect.center
 
-    def load_images(self, sprite_sheet):
+    def load_images(self, sprite_sheet, animation_steps):
         # extract images from sprite sheets
         size = sprite_sheet.get_height()
         animation_list = []
-        for i in range(c.ANIMATION_STEPS):
+        for i in range(animation_steps):
             temp_img = sprite_sheet.subsurface(i * size, 0, size, size)
             animation_list.append(temp_img)
         return animation_list
@@ -79,8 +80,9 @@ class Turret(pg.sprite.Sprite):
         self.upgrade_level += 1
         self.range = self.specific_data[self.upgrade_level - 1]["range"]
         self.cooldown = self.specific_data[self.upgrade_level - 1]["cooldown"]
+        animation_steps = self.specific_data[self.upgrade_level - 1]["animation_steps"]
         # update animation list
-        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
+        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1], animation_steps)
         self.original_image = self.animation_list[self.frame_index]
 
         # upgrade range circle
