@@ -113,7 +113,7 @@ class Enemy(pg.sprite.Sprite):
         #update image
         self.image = self.animation_list[self.frame_index]
         #check if enough time has passed since the last update
-        if pg.time.get_ticks() - self.update_time > (c.ANIMATION_ENEMY_DELAY / world.game_speed):
+        if pg.time.get_ticks() - self.update_time > (c.ANIMATION_ENEMY_DELAY / (self.speed * world.game_speed)):
             self.update_time = pg.time.get_ticks()
             self.frame_index += 1
             #if the animation has run out then reset back to the start
