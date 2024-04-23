@@ -1,5 +1,5 @@
 import pygame as pg
-from turret import Turret
+import turret as Turrets
 from button import Button
 from world import PlotStates
 from panel import Panel
@@ -56,7 +56,7 @@ class Player:
     def create_turret(self, mouse_pos):
         for plot in self.world.plots:
             if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
-                turret = Turret(self.turret_spritesheets, plot.center()[0], plot.center()[1])
+                turret = Turrets.TurretAulao(self.turret_spritesheets, plot.center()[0], plot.center()[1])
                 self.turret_group.add(turret)
                 # deduct cost of turret
                 self.money -= c.BUY_COST

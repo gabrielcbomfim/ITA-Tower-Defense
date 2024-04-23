@@ -1,4 +1,4 @@
-TURRET_DATA = [
+TURRET_GAGA_DATA = [
     {
         # 1
         "range": 150,
@@ -18,5 +18,28 @@ TURRET_DATA = [
         # 4
         "range": 250,
         "cooldown": 100,
+    },
+]
+
+TURRET_AULAO_DATA = [
+    {
+        # 1
+        "range": 150,
+        "cooldown": 300,
+    },
+    {
+        # 2
+        "range": 190,
+        "cooldown": 300,
+    },
+    {
+        # 3
+        "range": 225,
+        "cooldown": 300,
+    },
+    {
+        # 4
+        "range": 250,
+        "cooldown": 300,
     },
 ]

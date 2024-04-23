@@ -1,16 +1,16 @@
 import pygame as pg
 import math
 import constants as c
-from turret_data import TURRET_DATA
+import turret_data as data
 class Turret(pg.sprite.Sprite):
-    def __init__(self, sprite_sheets, tile_x, tile_y):
+    def __init__(self, sprite_sheets, tile_x, tile_y, specific_data):
         pg.sprite.Sprite.__init__(self)
         self.upgrade_level = 1
-        self.range = TURRET_DATA[self.upgrade_level-1]["range"]
-        self.cooldown = TURRET_DATA[self.upgrade_level-1]["cooldown"]
+        self.range = specific_data[self.upgrade_level-1]["range"]
+        self.cooldown = specific_data[self.upgrade_level-1]["cooldown"]
         self.last_shot = pg.time.get_ticks()
         self.selected = False
-        self.target = None
+        self.specific_data = specific_data
 
         #position variables
         self.tile_x = tile_x
@@ -51,16 +51,6 @@ class Turret(pg.sprite.Sprite):
             animation_list.append(temp_img)
         return animation_list
 
-    def update(self, enemy_group, world):
-        #if target picked, play firing animation
-        if self.target:
-            self.pick_target(enemy_group, world)
-            if pg.time.get_ticks() - self.last_shot > (self.cooldown/world.game_speed):
-                self.play_animation(world)
-        else:
-            # search for new target once turret has cooled down
-            self.pick_target(enemy_group, world)
-
     def play_animation(self, world):
         #update image
         self.original_image = self.animation_list[self.frame_index]
@@ -74,6 +64,67 @@ class Turret(pg.sprite.Sprite):
                 # record compleded time and clear target so cooldown can start
                 self.last_shot = pg.time.get_ticks()
                 self.target = None
+
+    def draw(self, surface):
+        self.image = pg.transform.rotate(self.original_image, self.angle - 90)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+        surface.blit(self.image, self.rect)
+        if self.selected:
+           surface.blit(self.range_image, self.range_rect)
+
+    def upgrade(self):
+        self.upgrade_level += 1
+        self.range = self.specific_data[self.upgrade_level-1]["range"]
+        self.cooldown = self.specific_data[self.upgrade_level-1]["cooldown"]
+        # update animation list
+        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
+        self.original_image = self.animation_list[self.frame_index]
+
+        # upgrade range circle
+        self.range_image = pg.Surface((self.range * 2, self.range * 2))
+        self.range_image.fill((0, 0, 0))
+        self.range_image.set_colorkey((0, 0, 0))
+        pg.draw.circle(self.range_image, "grey100", (self.range, self.range), self.range)
+        self.range_image.set_alpha(100)
+        self.range_rect = self.range_image.get_rect()
+        self.range_rect.center = self.rect.center
+
+class TurretAulao(Turret):
+    def __init__(self, sprite_sheets, tile_x, tile_y):
+        super().__init__(sprite_sheets, tile_x, tile_y, data.TURRET_AULAO_DATA)
+        self
+
+    def update(self, enemy_group, world):
+        #if target picked, play firing animation
+        if pg.time.get_ticks() - self.last_shot > (self.cooldown / world.game_speed):
+            self.play_animation(world)
+
+        for enemy in enemy_group:
+            if enemy.health > 0:
+                x_dist = enemy.pos[0] - self.x
+                y_dist = enemy.pos[1] - self.y
+                dist = math.sqrt(x_dist ** 2 + y_dist ** 2)
+                if dist < self.range:
+                    # damage
+                    enemy.health -= 0.5 * world.game_speed
+
+
+class TurretGaga(Turret):
+
+    def __init__(self, sprite_sheets, tile_x, tile_y):
+        super().__init__(sprite_sheets, tile_x, tile_y, data.TURRET_GAGA_DATA)
+        self.target = None
+
+    def update(self, enemy_group, world):
+        #if target picked, play firing animation
+        if self.target:
+            self.pick_target(enemy_group, world)
+            if pg.time.get_ticks() - self.last_shot > (self.cooldown/world.game_speed):
+                self.play_animation(world)
+        else:
+            # search for new target once turret has cooled down
+            self.pick_target(enemy_group, world)
 
     def pick_target(self, enemy_group, world):
         #find an enemy to target
@@ -92,28 +143,3 @@ class Turret(pg.sprite.Sprite):
                     # damage
                     self.target.health -= c.DAMAGE * world.game_speed
                     break
-
-    def draw(self, surface):
-        self.image = pg.transform.rotate(self.original_image, self.angle - 90)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.x, self.y)
-        surface.blit(self.image, self.rect)
-        if self.selected:
-           surface.blit(self.range_image, self.range_rect)
-
-    def upgrade(self):
-        self.upgrade_level += 1
-        self.range = TURRET_DATA[self.upgrade_level-1]["range"]
-        self.cooldown = TURRET_DATA[self.upgrade_level-1]["cooldown"]
-        # update animation list
-        self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
-        self.original_image = self.animation_list[self.frame_index]
-
-        # upgrade range circle
-        self.range_image = pg.Surface((self.range * 2, self.range * 2))
-        self.range_image.fill((0, 0, 0))
-        self.range_image.set_colorkey((0, 0, 0))
-        pg.draw.circle(self.range_image, "grey100", (self.range, self.range), self.range)
-        self.range_image.set_alpha(100)
-        self.range_rect = self.range_image.get_rect()
-        self.range_rect.center = self.rect.center
