@@ -16,8 +16,8 @@ class Turret(pg.sprite.Sprite):
         self.tile_x = tile_x
         self.tile_y = tile_y
         # calculate center coordinates
-        self.x = (self.tile_x+0.5) * c.TILE_SIZE
-        self.y = (self.tile_y+0.5) * c.TILE_SIZE
+        self.x = (self.tile_x+0.5)
+        self.y = (self.tile_y+0.5)
 
         # animations variables
         self.sprite_sheets = sprite_sheets

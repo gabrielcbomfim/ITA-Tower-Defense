@@ -74,10 +74,8 @@ class Player:
                 break
 
     def select_turret(self, mouse_pos):
-        mouse_tile_x = mouse_pos[0] // c.TILE_SIZE
-        mouse_tile_y = mouse_pos[1] // c.TILE_SIZE
         for turret in self.turret_group:
-            if abs(turret.tile_x - mouse_tile_x) <= 20 and abs(turret.tile_y - mouse_tile_y) <= 20:
+            if abs(turret.tile_x - mouse_pos[0]) <= 20 and abs(turret.tile_y - mouse_pos[1]) <= 20:
                 turret.selected = True
                 return turret
 
