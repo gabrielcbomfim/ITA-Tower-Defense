@@ -31,11 +31,8 @@ enemy_images = {
 }
 
 # turret spritesheets
-turret_spritesheets = []
-for x in range(1, c.TURRET_LEVELS + 1):
-    turret_spritesheets.append(pg.image.load(f"./assets/turrets/turret_{x}.png").convert_alpha())
 
-turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
+# turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
 # load json data for level
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
@@ -56,7 +53,7 @@ while True:
     turret_group = pg.sprite.Group()
 
     # Player
-    player = Player(turret_group, turret_spritesheets, world)
+    player = Player(turret_group, world)
 
     # Game loop
     while player.run:

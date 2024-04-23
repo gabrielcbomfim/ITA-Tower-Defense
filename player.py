@@ -13,7 +13,7 @@ def draw_text(screen, text, font, text_col, x, y):
 
 
 class Player:
-    def __init__(self, turret_group, turret_spritesheets, world):
+    def __init__(self, turret_group, world):
         self.placing_turrets = False
         self.selected_turret = None
         self.restart = True
@@ -60,13 +60,12 @@ class Player:
 
         self.cursor_turret = cursor_turret
         self.turret_group = turret_group
-        self.turret_spritesheets = turret_spritesheets
         self.world = world
 
     def create_turret(self, mouse_pos):
         for plot in self.world.plots:
             if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
-                turret = Turrets.TurretAulao(self.turret_spritesheets, plot.center()[0], plot.center()[1])
+                turret = Turrets.TurretAulao(plot.center()[0], plot.center()[1])
                 self.turret_group.add(turret)
                 # deduct cost of turret
                 self.money -= c.BUY_COST

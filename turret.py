@@ -91,9 +91,13 @@ class Turret(pg.sprite.Sprite):
         self.range_rect.center = self.rect.center
 
 class TurretAulao(Turret):
-    def __init__(self, sprite_sheets, tile_x, tile_y):
-        super().__init__(sprite_sheets, tile_x, tile_y, data.TURRET_AULAO_DATA)
-        self
+    def __init__(self, tile_x, tile_y):
+        turret_spritesheets = []
+        for x in range(1, c.TURRET_LEVELS + 1):
+            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{x}.png").convert_alpha())
+        self.sprite_sheets = turret_spritesheets
+        super().__init__(self.sprite_sheets, tile_x, tile_y, data.TURRET_AULAO_DATA)
+
 
     def update(self, enemy_group, world):
         #if target picked, play firing animation
@@ -112,8 +116,12 @@ class TurretAulao(Turret):
 
 class TurretGaga(Turret):
 
-    def __init__(self, sprite_sheets, tile_x, tile_y):
-        super().__init__(sprite_sheets, tile_x, tile_y, data.TURRET_GAGA_DATA)
+    def __init__(self, tile_x, tile_y):
+        turret_spritesheets = []
+        for x in range(1, c.TURRET_LEVELS + 1):
+            turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretGaga/turret_{x}.png").convert_alpha())
+        self.sprite_sheets = turret_spritesheets
+        super().__init__(self.sprite_sheets, tile_x, tile_y, data.TURRET_GAGA_DATA)
         self.target = None
 
     def update(self, enemy_group, world):
