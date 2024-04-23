@@ -3,22 +3,7 @@ import turret as Turrets
 from button import Button
 from world import PlotStates
 from panel import Panel
-from enum import Enum
 import constants as c
-
-
-class PlacingStates(Enum):
-    """
-    Um enum que serve para abstrair o estados de colocar coisas (habilidades e torres)
-    """
-    NOT_PLACING = 0
-    TORRE_DO_GAGA = 1
-    TORRE_AULAO = 2
-    TORRE_RANCHO = 3
-    BOMBA = 4
-    G = 5
-    VIRADAO = 6
-    ENERGETICO = 7
 
 
 # function for outputting text on screen
@@ -53,8 +38,6 @@ class Player:
         begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
-
-        #Abilities Buttons Images:
 
         # Create buttons:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
