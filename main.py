@@ -123,6 +123,11 @@ while True:
             if world.check_level_complete():
                 player.money += c.LEVEL_COMPLETE_REWARD
                 world.level_started = False
+                # Tocar musica calma:
+                pg.mixer.music.play(0)
+                pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
+                pg.mixer.music.play(-1)
+
                 world.level += 1
                 world.last_enemy_spawn = pg.time.get_ticks()
                 world.reset_level()
