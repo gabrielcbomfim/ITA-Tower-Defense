@@ -171,9 +171,9 @@ class Player:
 
         # draw text:
         self.draw_i(screen)
-        draw_text(screen, str(self.health)+'/'+str(self.max_health), self.text_font, "red", c.SCREEN_WIDHT / 2, 0)
-        draw_text(screen, str(self.money), self.text_font, "green", c.SCREEN_WIDHT + 30, 0)
-        draw_text(screen, str(self.world.level), self.text_font, "grey100", 0, 0)
+        draw_text(screen, "Bizus: "+str(self.money), self.text_font, "green", c.SCREEN_WIDHT+30, 640)
+        draw_text(screen, "Saúde: "+str(self.health)+"/"+str(self.max_health), self.text_font, "red",  c.SCREEN_WIDHT+30, 680)
+        draw_text(screen, "Semestre: "+str(self.world.level), self.text_font, "grey100",  c.SCREEN_WIDHT+30, 720)
 
         # draw buttons:
         self.upgrade_button.draw(screen)
@@ -223,7 +223,7 @@ class Player:
         # Towers:
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
-            self.placing_state = PlacingStates.TORRE_DO_GAGA
+            self.placing_state = PlacingStates.TORRE_AULAO
             return True
 
         # Abilities:
