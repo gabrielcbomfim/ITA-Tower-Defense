@@ -1,5 +1,7 @@
 class Panel:
     def __init__(self, x, y, image, visible=True):
+        self.x = x
+        self.y = y
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)

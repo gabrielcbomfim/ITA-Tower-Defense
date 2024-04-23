@@ -40,7 +40,8 @@ class Player:
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 
         # Create buttons:
-        self.panel = Panel(c.SCREEN_WIDHT + 30, 30, panel_image)
+        self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
+
         self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
         self.cancel_button = Button(c.SCREEN_WIDHT + 30, 240, cancel_image, False)
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
@@ -145,6 +146,9 @@ class Player:
 
         if self.begin_button.check_click(mouse_pos):
             self.world.level_started = True
+            #Tocar musica agitada:
+            pg.mixer.music.load('assets/audio/CovaDela180BPM.wav')
+            pg.mixer.music.play(-1)
             return True
 
         if self.fast_forward_button.check_click(mouse_pos):

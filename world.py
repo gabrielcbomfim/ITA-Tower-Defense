@@ -71,6 +71,10 @@ class World:
         self.x_ratio = screen.get_width() / (data['width'] * data['tilewidth'])
         self.y_ratio = screen.get_height() / (data['height'] * data['tileheight'])
 
+
+
+
+
     def process_data(self):
         """
         Olha para data para extrair informação relevante
