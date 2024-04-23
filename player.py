@@ -246,6 +246,12 @@ class Player:
                 self.selected_turret.upgrade()
                 return True
 
+        for turret in self.turret_group:
+            if type(turret) is Turrets.TurretRancho and True:
+                if turret.eat_food(self, mouse_pos):
+                    return True
+
+
         # Check if mouse is on the game area
         if mouse_pos[0] < c.SCREEN_WIDHT and mouse_pos[1] < c.SCREEN_HEIGHT:
             # clear selected turrets
