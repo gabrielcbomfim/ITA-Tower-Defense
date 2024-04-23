@@ -34,13 +34,13 @@ class Enemy(pg.sprite.Sprite):
         self.target_waypoint = 1
         self.type = enemy_type
         self.health = ENEMY_DATA.get(enemy_type)["health"]
-        self.speed = ENEMY_DATA.get(enemy_type)["health"]
+        self.speed = ENEMY_DATA.get(enemy_type)["speed"]
         self.angle = 0
 
         # direction for the enemy
-        # 0 = down, 1 = up, 3 = right, 4 = left
+        # 0 = down, 1 = up, 2 = right, 3 = left
         # nasce sempre para direita.
-        self.direction = 0
+        self.direction = 2
 
 
 
@@ -149,24 +149,34 @@ class Enemy(pg.sprite.Sprite):
         # use distance to calculate the angle
         self.angle = math.degrees(math.atan2(-dist[1], dist[0]))
         # rotate image and update rectangle
-
-        if self.type == "elite":
+        if self.type == "weak":
             if self.angle < 45 and self.angle > -45:
-                self.direction = 3
+                self.image = pg.transform.rotate(self.animation_list[self.frame_index], 90)
             elif self.angle < 135 and self.angle > 45:
-                self.direction = 0
+                self.image = pg.transform.rotate(self.animation_list[self.frame_index], 0)
+            elif self.angle < -45 and self.angle > -135:
+                self.image = pg.transform.rotate(self.animation_list[self.frame_index], 0)
             elif self.angle < -135 or self.angle > 135:
+                self.image = pg.transform.rotate(self.animation_list[self.frame_index],  90)
+        elif self.type != "elite":
+            self.image = pg.transform.rotate(self.animation_list[self.frame_index], self.angle - 90)
+        else:
+            if self.angle < 45 and self.angle > -45:
+                self.direction = 2
+            elif self.angle < 135 and self.angle > 45:
                 self.direction = 1
             elif self.angle < -45 and self.angle > -135:
-                self.direction = 2
-        else:
-            self.image = pg.transform.rotate(self.animation_list[self.frame_index], self.angle-90)
+                self.direction = 0
+            elif self.angle < -135 or self.angle > 135:
+                self.direction = 3
+
+
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
     def update(self, player, world):
-        self.rotate(player, world)
         self.play_animation(world)
+        self.rotate(player, world)
         self.move(world)
         self.check_alive(player, world)
 
