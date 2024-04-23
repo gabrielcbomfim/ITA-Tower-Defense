@@ -95,7 +95,6 @@ while True:
         # draw level
         world.draw(screen)
 
-
         # draw enemy path
         pg.draw.lines(screen, "grey0", False, world.paths[path_aleatorio])
 
@@ -108,6 +107,7 @@ while True:
 
         if not world.game_over:
             if world.level_started:
+
                 # Spawn enemies
                 if pg.time.get_ticks() - world.last_enemy_spawn > c.SPAWN_COOLDOWN:
                     if world.spawned_enemies < len(world.enemy_list):

@@ -26,7 +26,6 @@ class PlacingStates(Enum):
     PITBULL = 7
 
 
-
 class Player:
     def __init__(self, turret_group, world):
         # Incializar o estado de placing como estado neutro:
@@ -34,6 +33,9 @@ class Player:
         self.selected_turret = None
         self.restart = True
         self.run = True
+
+        #Controle de habilidades:
+        self.in_viradao = False
 
         self.i_count = 0
         self.i_list = []
@@ -46,6 +48,9 @@ class Player:
         # load fonts for text on screen
         self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
         self.large_font = pg.font.SysFont("Consolas", 48)
+
+        # Load Sounds:
+        self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
 
         # Preview Cursor Images:
         self.cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
@@ -67,6 +72,9 @@ class Player:
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
 
+        # Abilities images:
+        viradao_image = pg.image.load("./assets/buttons/viradao_icone.png").convert_alpha()
+        viradao_image = pg.transform.scale(viradao_image, (140, 140))
 
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
@@ -78,6 +86,9 @@ class Player:
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 360, begin_image)
         self.restart_button = Button(310, 420, restart_image, False)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, True, False)
+
+        #Abilities buttons
+        self.viradao_button = Button(c.SCREEN_WIDHT + 300, 400, viradao_image, True, False)
 
         self.turret_group = turret_group
         self.world = world
@@ -171,6 +182,8 @@ class Player:
         self.begin_button.draw(screen)
         self.restart_button.draw(screen)
         self.fast_forward_button.draw(screen)
+        #Abilities buttons:
+        self.viradao_button.draw(screen)
 
         # if placing turrents then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
@@ -207,9 +220,17 @@ class Player:
         mouse_pos = pg.mouse.get_pos()
 
         # Check buttons first
+        # Towers:
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.TORRE_RANCHO
+            return True
+
+        # Abilities:
+
+        if self.viradao_button.check_click(mouse_pos) and self.run:
+            self.viradao_sound.play()
+            
             return True
 
         if self.begin_button.check_click(mouse_pos):
