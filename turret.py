@@ -14,6 +14,7 @@ class Turret(pg.sprite.Sprite):
         self.buy_cost = specific_data[self.upgrade_level - 1]["buy_cost"]
         self.range = specific_data[self.upgrade_level - 1]["range"]
         self.cooldown = specific_data[self.upgrade_level - 1]["cooldown"]
+        self.cooldown_natural = self.cooldown
         animation_steps = specific_data[self.upgrade_level - 1]["animation_steps"]
         self.last_action = pg.time.get_ticks()
         self.selected = False
@@ -21,7 +22,7 @@ class Turret(pg.sprite.Sprite):
 
         # Ability control (pitbull):
         self.pitbull_state = 0
-
+        self.last_state_time = pg.time.get_ticks()
 
         # calculate center coordinates
         self.x = (x + 0.5)
@@ -105,6 +106,20 @@ class Turret(pg.sprite.Sprite):
         self.range_rect = self.range_image.get_rect()
         self.range_rect.center = self.rect.center
 
+    def pitbull(self):
+        self.last_state_time = pg.time.get_ticks()
+        self.cooldown_natural = self.cooldown
+        self.pitbull_state = 1
+
+    def pitbull_control(self, player, world):
+        if self.pitbull_state == 1:
+            self.cooldown = self.cooldown_natural/c.PITBULL_FACTOR
+            if pg.time.get_ticks() - self.last_state_time >= c.PITBULL_TIME/world.game_speed:
+                self.last_state_time = pg.time.get_ticks()
+                self.pitbull_state = 0
+                self.cooldown = self.cooldown_natural
+
+
 
 class TurretRancho(Turret):
 
@@ -138,6 +153,7 @@ class TurretRancho(Turret):
         if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
             self.create_food()
             self.last_action = pg.time.get_ticks()
+        self.pitbull_control(self, world)
 
     def draw(self, surface):
         super().draw(surface)
@@ -153,6 +169,7 @@ class TurretRancho(Turret):
                     player.change_health(15)
 
 
+
 class TurretAulao(Turret):
     def __init__(self, x, y):
         turret_spritesheets = []
@@ -161,9 +178,6 @@ class TurretAulao(Turret):
         self.sprite_sheets = turret_spritesheets
         super().__init__(self.sprite_sheets, x, y, data.TURRET_AULAO_DATA)
         self.target = None
-
-
-
 
         self.boomimage = pg.image.load(f"./assets/turrets/TurretAulao/boomaulao.png").convert_alpha()
         self.boom_list = self.load_boom()
@@ -178,6 +192,7 @@ class TurretAulao(Turret):
         else:
             self.pick_target(enemy_group, world)
             self.boom.frame_index = 0
+        self.pitbull_control(self, world)
 
     def play_animation(self, world, enemy_group):
         super().play_animation(world, enemy_group)
@@ -255,6 +270,7 @@ class TurretGaga(Turret):
         else:
             # search for new target once turret has cooled down
             self.pick_target(enemy_group, world)
+        self.pitbull_control(self, world)
 
 
     def pick_target(self, enemy_group, world):
@@ -272,3 +288,7 @@ class TurretGaga(Turret):
     def action(self, enemy_group):
         if self.target:
             self.target.health -= self.damage
+
+
+
+
