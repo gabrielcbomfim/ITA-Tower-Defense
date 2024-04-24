@@ -36,6 +36,8 @@ enemy_images = {
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
+
+
 # Restart loop, only quits on pg.QUIT
 while True:
 
@@ -143,7 +145,7 @@ while True:
                 break
 
             # sends event to UI
-            if player.handle_input(event):
+            if player.handle_input(event,screen):
                 break
 
 
