@@ -5,7 +5,7 @@ import turret_data
 import turret_data as data
 import random
 from button import Button
-
+from animation import Animation
 class Turret(pg.sprite.Sprite):
     def __init__(self, sprite_sheets, x, y, specific_data):
         pg.sprite.Sprite.__init__(self)
@@ -19,6 +19,7 @@ class Turret(pg.sprite.Sprite):
         self.selected = False
         self.specific_data = specific_data
 
+
         # calculate center coordinates
         self.x = (x + 0.5)
         self.y = (y + 0.5)
@@ -28,6 +29,7 @@ class Turret(pg.sprite.Sprite):
         self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1], animation_steps)
         self.frame_index = 0
         self.update_time = pg.time.get_ticks()
+
 
         # update image
         self.angle = 90
@@ -49,9 +51,11 @@ class Turret(pg.sprite.Sprite):
         # extract images from sprite sheets
         size = sprite_sheet.get_height()
         animation_list = []
+
         for i in range(animation_steps):
             temp_img = sprite_sheet.subsurface(i * size, 0, size, size)
             animation_list.append(temp_img)
+
         return animation_list
 
     def action(self, enemy_group):
@@ -110,6 +114,7 @@ class TurretRancho(Turret):
         self.food = None
         self.food_type = None
 
+
     def create_food(self):
         # TODO
         # Criar sprite de foods
@@ -151,11 +156,68 @@ class TurretAulao(Turret):
             turret_spritesheets.append(pg.image.load(f"./assets/turrets/TurretAulao/turret_{i}.png").convert_alpha())
         self.sprite_sheets = turret_spritesheets
         super().__init__(self.sprite_sheets, x, y, data.TURRET_AULAO_DATA)
+        self.target = None
+
+
+
+
+        self.boomimage = pg.image.load(f"./assets/turrets/TurretAulao/boomaulao.png").convert_alpha()
+        self.boom_list = self.load_boom()
+        self.boom = None
+        self.create_animation()
+
 
     def update(self, enemy_group, world):
         # if target picked, play firing animation
-        if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed):
+        if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed) and self.target:
             self.play_animation(world, enemy_group)
+        else:
+            self.pick_target(enemy_group, world)
+            self.boom.frame_index = 0
+
+    def play_animation(self, world, enemy_group):
+        super().play_animation(world, enemy_group)
+        self.boom.update()
+    def load_boom(self):
+# extract images from sprite sheets
+        sprite_width = self.boomimage.get_width()
+        sprite_height = self.boomimage.get_height()
+
+        sprite_width = sprite_width * 2
+        sprite_height = sprite_height * 2
+        self.boomimage = pg.transform.scale(self.boomimage, (sprite_width, sprite_height))
+        boom_list = []
+
+        for i in range(5):
+
+            temp_img = self.boomimage.subsurface(i * sprite_height/2, 0, sprite_height/2, sprite_height/2)
+            boom_list.append(temp_img)
+        for i in range(3):
+            temp_img = self.boomimage.subsurface(i * sprite_height/2, sprite_height/2, sprite_height/2, sprite_height/2)
+            boom_list.append(temp_img)
+
+
+        return boom_list
+
+    def create_animation(self):
+        self.boom = Animation(self.x, self.y, self.boom_list, 8)
+
+    def draw(self, surface):
+        super().draw(surface)
+        sprite_width = self.boom_list[0].get_width()
+        if self.boom is not None:
+            self.boom.draw(surface,self.x - sprite_width/2,self.y - sprite_width/2)
+
+    def pick_target(self, enemy_group, world):
+        # search for new target
+        for enemy in enemy_group:
+            if enemy.health > 0:
+                x_dist = enemy.pos[0] - self.x
+                y_dist = enemy.pos[1] - self.y
+                dist = math.sqrt(x_dist ** 2 + y_dist ** 2)
+                if dist < self.range:
+                    self.target = enemy
+                    break
 
     def action(self, enemy_group):
         for enemy in enemy_group:
@@ -163,7 +225,6 @@ class TurretAulao(Turret):
                 x_dist = enemy.pos[0] - self.x
                 y_dist = enemy.pos[1] - self.y
                 dist = math.sqrt(x_dist ** 2 + y_dist ** 2)
-
                 if dist < self.range:
                     # damage
                     # TODO
@@ -190,6 +251,7 @@ class TurretGaga(Turret):
         else:
             # search for new target once turret has cooled down
             self.pick_target(enemy_group, world)
+
 
     def pick_target(self, enemy_group, world):
         # search for new target
