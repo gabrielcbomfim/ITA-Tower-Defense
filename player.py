@@ -70,6 +70,7 @@ class Player:
         self.cursor_pitbull = pg.image.load('./assets/abilities/pitbull.png').convert_alpha()
         self.g_image_spritesheet = pg.image.load("./assets/abilities/G_spritesheet.png").convert_alpha()
         self.g_image_spritesheet  = pg.transform.scale(self.g_image_spritesheet, (480, 120))
+
         # Panel image:
         panel_image = pg.image.load("./assets/buttons/panel_image.png").convert_alpha()
 
@@ -92,7 +93,10 @@ class Player:
         viradao_image = pg.transform.scale(viradao_image, (120, 120))
         g_image = pg.image.load("./assets/buttons/G_icone.png").convert_alpha()
         g_image = pg.transform.scale(g_image, (120, 120))
-
+        pitbull_image = pg.image.load("./assets/buttons/Pitbull_moldura.png").convert_alpha()
+        pitbull_image = pg.transform.scale(pitbull_image, (120, 120))
+        bomba_image = pg.image.load("./assets/buttons/bomba_icone.png").convert_alpha()
+        bomba_image = pg.transform.scale(bomba_image, (120, 120))
 
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
@@ -110,6 +114,8 @@ class Player:
         #Abilities buttons
         self.viradao_button = Button(c.SCREEN_WIDHT + 240, 420, viradao_image, True, False)
         self.g_button = Button(c.SCREEN_WIDHT + 20, 420, g_image, True, False)
+        self.pitbull_button = Button(c.SCREEN_WIDHT + 20, 280, pitbull_image, True, False)
+        self.bomba_button = Button(c.SCREEN_WIDHT + 240, 280, bomba_image, True, False)
 
         self.turret_group = turret_group
         self.world = world
@@ -234,6 +240,8 @@ class Player:
         #Abilities buttons:
         self.viradao_button.draw(screen)
         self.g_button.draw(screen)
+        self.pitbull_button.draw(screen)
+        self.bomba_button.draw(screen)
 
         # if placing turrets then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
@@ -257,7 +265,10 @@ class Player:
                     radius = c.G_RADIUS
                 elif self.placing_state == PlacingStates.BOMBA:
                     radius = c.BOMBA_RADIUS
-                if self.placing_state == PlacingStates.G or self.placing_state == PlacingStates.BOMBA:
+                elif self.placing_state == PlacingStates.PITBULL:
+                    radius = c.PITBULL_RADIUS
+
+                if self.placing_state in [PlacingStates.G, PlacingStates.BOMBA, PlacingStates.PITBULL]:
                     self.range_image = pg.Surface((radius * 2, radius * 2))
                     self.range_image.fill((0, 0, 0))
                     self.range_image.set_colorkey((0, 0, 0))
@@ -318,6 +329,14 @@ class Player:
 
         if self.g_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.G
+            return True
+
+        if self.bomba_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.BOMBA
+            return True
+
+        if self.pitbull_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.PITBULL
             return True
 
         if self.begin_button.check_click(mouse_pos):
@@ -381,6 +400,12 @@ class Player:
                     if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.G_RADIUS:
                         enemy.g()
 
+            # Se bota Pitbull:
+            if self.placing_state == PlacingStates.PITBULL and self.health > 0:
+                self.health -= c.PITBULL_CUSTO
+                for turret in self.turret_group:
+                    if pg.math.Vector2(mouse_pos).distance_to(pg.math.Vector2(turret.x, turret.y)) < c.PITBULL_RADIUS:
+                        turret.pitbull()
 
             # Se torre:
             if self.placing_state in [PlacingStates.TORRE_RANCHO, PlacingStates.TORRE_AULAO, PlacingStates.TORRE_DO_GAGA]:
