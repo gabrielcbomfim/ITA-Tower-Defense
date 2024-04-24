@@ -82,12 +82,12 @@ class Player:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
 
         # Create buttons:
-        self.upgrade_button = Button(c.SCREEN_WIDHT + 30, 180, upgrade_turret_image, False)
-        self.cancel_button = Button(c.SCREEN_WIDHT + 30, 240, cancel_image, False)
+        self.upgrade_button = Button(c.SCREEN_WIDHT + 230, 760, upgrade_turret_image, False)
+        self.cancel_button = Button(c.SCREEN_WIDHT + 230, 820, cancel_image, False)
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
-        self.begin_button = Button(c.SCREEN_WIDHT + 30, 360, begin_image)
+        self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
         self.restart_button = Button(310, 420, restart_image, False)
-        self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 420, fast_forward_image, True, False)
+        self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
 
         #Abilities buttons
         self.viradao_button = Button(c.SCREEN_WIDHT + 300, 400, viradao_image, True, False)
@@ -224,13 +224,20 @@ class Player:
 
     # Returns true if click has resulted in a successful action
     def handle_input(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
+            self.placing_state = PlacingStates.NOT_PLACING
+            self.cancel_button.visible = False
+            self.upgrade_button.visible = False
+            self.selected_turret = None
+            self.clear_selection()
+            return True
+
         # Check if event is Mouse Click:
         if not (event.type == pg.MOUSEBUTTONDOWN and event.button == 1):
             return False
 
         mouse_pos = pg.mouse.get_pos()
 
-        # Check buttons first
         # Towers:
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
         if self.turrent_button.check_click(mouse_pos):
@@ -266,26 +273,24 @@ class Player:
             self.run = False
             return True
 
-        # if placing turrents or abilities then show the cancel button as well
-        if self.placing_state != PlacingStates.NOT_PLACING:
-            cursor_rect = self.cursor_turret.get_rect()
-            cursor_pos = pg.mouse.get_pos()
-            cursor_rect.center = cursor_pos
-            if self.cancel_button.check_click(cursor_pos) or pg.mouse.get_pressed()[2] == 1:
-                self.placing_state = PlacingStates.NOT_PLACING
-                return True
-
         if self.upgrade_button.check_click(mouse_pos):
             if self.money >= c.UPGRADE_COST:
                 self.money -= c.UPGRADE_COST
                 self.selected_turret.upgrade()
                 return True
 
+        if self.cancel_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.NOT_PLACING
+            self.cancel_button.visible = False
+            self.upgrade_button.visible = False
+            self.selected_turret = None
+            self.clear_selection()
+            return True
+
         for turret in self.turret_group:
             if type(turret) is Turrets.TurretRancho and True:
                 if turret.eat_food(self, mouse_pos):
                     return True
-
 
         # Check if mouse is on the game area
         if mouse_pos[0] < c.SCREEN_WIDHT and mouse_pos[1] < c.SCREEN_HEIGHT:
@@ -298,6 +303,7 @@ class Player:
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
                 if self.selected_turret is not None:
+                    self.placing_state = PlacingStates.NOT_PLACING
                     return True
 
         return False
