@@ -147,6 +147,7 @@ while True:
                 break
 
 
+
         # update the display
         pg.display.flip()
 
