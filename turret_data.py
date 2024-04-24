@@ -1,7 +1,7 @@
 TURRET_GAGA_DATA = [
     {
         # 1
-        "damage": 7,
+        "damage": 10,
         "range": 225,
         "cooldown": 600,
         "buy_cost": 200,
@@ -9,14 +9,14 @@ TURRET_GAGA_DATA = [
     },
     {
         # 2
-        "damage": 10,
+        "damage": 20,
         "range": 250,
         "cooldown": 600,
         "animation_steps": 8,
     },
     {
         # 3
-        "damage": 15,
+        "damage": 25,
         "range": 275,
         "cooldown": 500,
         "animation_steps": 8,
