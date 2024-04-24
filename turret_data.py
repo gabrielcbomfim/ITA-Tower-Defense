@@ -28,7 +28,7 @@ TURRET_AULAO_DATA = [
         # 1
         "damage": 5,
         "range": 175,
-        "cooldown": 1000,
+        "cooldown": 1100,
         "buy_cost": 200,
         "animation_steps": 8,
     },

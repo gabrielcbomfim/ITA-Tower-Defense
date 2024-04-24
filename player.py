@@ -61,6 +61,8 @@ class Player:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
         self.G_audio = pg.mixer.Sound("assets/audio/G_loko_audio.wav")
         self.bomba_audio = pg.mixer.Sound("assets/audio/Audio_Explosao.wav")
+        self.gulp_gulp_audio = pg.mixer.Sound("assets/audio/gulp_gulp_audio.wav")
+        self.gulp_gulp_audio.set_volume(0.3)
 
         # Preview Cursor Images:
         self.cursor_turret = pg.image.load("./assets/turrets/cursor_gaga.png").convert_alpha()
@@ -435,6 +437,7 @@ class Player:
             if self.placing_state == PlacingStates.PITBULL and self.health > 0 and (self.money - c.PITBULL_CUSTO_BIZUS) >=0:
                 self.health -= c.PITBULL_CUSTO_SAUDE
                 self.money -= c.PITBULL_CUSTO_BIZUS
+                self.gulp_gulp_audio.play()
                 for turret in self.turret_group:
                     if pg.math.Vector2(mouse_pos).distance_to(pg.math.Vector2(turret.x, turret.y)) < c.PITBULL_RADIUS:
                         turret.pitbull()
