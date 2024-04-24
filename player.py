@@ -1,5 +1,6 @@
 import pygame as pg
 import turret as Turrets
+import turret_data
 from button import Button
 from world import PlotStates
 from panel import Panel
@@ -51,6 +52,7 @@ class Player:
         self.health = 100
 
         # load fonts for text on screen
+        self.small_font = pg.font.SysFont("Consolas", 20, bold = True)
         self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
         self.large_font = pg.font.SysFont("Consolas", 108)
 
@@ -74,7 +76,6 @@ class Player:
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
         cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
-        buy_turret_image = pg.image.load("./assets/buttons/buy_turret.png").convert_alpha()
         begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
@@ -82,28 +83,28 @@ class Player:
         torre_gaga_image = pg.image.load("./assets/turrets/TurretGaga/gaga_icone.png").convert_alpha()
         torre_aulao_image = pg.image.load("./assets/turrets/TurretAulao/aulao_icone.png").convert_alpha()
         torre_rancho_image = pg.image.load("./assets/turrets/TurretRancho/turret_3.png").convert_alpha()
+        torre_rancho_image = pg.transform.scale(torre_rancho_image, (110, 110))
         # Abilities images:
         viradao_image = pg.image.load("./assets/buttons/viradao_icone.png").convert_alpha()
-        viradao_image = pg.transform.scale(viradao_image, (130, 130))
+        viradao_image = pg.transform.scale(viradao_image, (120, 120))
         g_image = pg.image.load("./assets/buttons/G_icone.png").convert_alpha()
-        g_image = pg.transform.scale(g_image, (130, 130))
+        g_image = pg.transform.scale(g_image, (120, 120))
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
 
         # Create buttons:
         self.upgrade_button = Button(c.SCREEN_WIDHT + 230, 760, upgrade_turret_image, False)
         self.cancel_button = Button(c.SCREEN_WIDHT + 230, 820, cancel_image, False)
-        self.turret_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turret_image, True, False)
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
         self.restart_button = Button(c.SCREEN_WIDHT + 30, 880, restart_image, True)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
         # Turret buttons:
-        self.gaga_button = Button(c.SCREEN_WIDHT + 30, 400, torre_gaga_image, True, False)
-        self.aulao_button = Button(c.SCREEN_WIDHT + 30, 500, torre_aulao_image, True, False)
-        self.rancho_button = Button(c.SCREEN_WIDHT + 30, 600, torre_rancho_image, True, False)
+        self.gaga_button = Button(c.SCREEN_WIDHT + 210, 150, torre_gaga_image, True, False)
+        self.aulao_button = Button(c.SCREEN_WIDHT + 330, 150, torre_aulao_image, True, False)
+        self.rancho_button = Button(c.SCREEN_WIDHT + 50, 140, torre_rancho_image, True, False)
         #Abilities buttons
-        self.viradao_button = Button(c.SCREEN_WIDHT + 300, 400, viradao_image, True, False)
-        self.g_button = Button(c.SCREEN_WIDHT + 150, 400, g_image, True, False)
+        self.viradao_button = Button(c.SCREEN_WIDHT + 240, 420, viradao_image, True, False)
+        self.g_button = Button(c.SCREEN_WIDHT + 20, 420, g_image, True, False)
 
         self.turret_group = turret_group
         self.world = world
@@ -199,10 +200,18 @@ class Player:
         else:
             draw_text(screen, "Semestre: "+str(self.world.level), self.text_font, "grey100",  c.SCREEN_WIDHT+30, 720)
 
+        # Draw description texts:
+        draw_text(screen, "Gagá-" + str(turret_data.TURRET_GAGA_DATA[0]["buy_cost"]) + "B", self.small_font,
+                  "darkgreen", c.SCREEN_WIDHT+210, 250)
+        draw_text(screen,"Aulão-" + str(turret_data.TURRET_AULAO_DATA[0]["buy_cost"]) + "B", self.small_font,
+                  "darkgreen", c.SCREEN_WIDHT+330, 250)
+        draw_text(screen, "Rancho-" + str(turret_data.TURRET_RANCHO_DATA[0]["buy_cost"]) + "B", self.small_font,
+                  "darkgreen", c.SCREEN_WIDHT + 50, 250)
+        draw_text(screen, )
+
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
-        self.turret_button.draw(screen)
         self.begin_button.draw(screen)
         self.restart_button.draw(screen)
         self.fast_forward_button.draw(screen)
@@ -223,7 +232,7 @@ class Player:
             # Escolha do cursor preview:
             switch_case_cursor = {
                 PlacingStates.TORRE_AULAO: self.cursor_turret,
-                PlacingStates.TORRE_RANCHO: self.cursor_turret,
+                PlacingStates.TORRE_RANCHO: self.cursor_rancho,
                 PlacingStates.TORRE_DO_GAGA: self.cursor_turret,
                 PlacingStates.G: self.cursor_G,
                 PlacingStates.BOMBA: self.cursor_bomba,
@@ -273,11 +282,17 @@ class Player:
         mouse_pos = pg.mouse.get_pos()
 
         # Towers:
-        #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
-        if self.turret_button.check_click(mouse_pos):
-            self.placing_state = PlacingStates.TORRE_AULAO
+
+        if self.rancho_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.TORRE_RANCHO
             return True
-        
+
+        if self.gaga_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.TORRE_DO_GAGA
+            return True
+
+        if self.aulao_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.TORRE_AULAO
 
         # Abilities:
         if self.viradao_button.check_click(mouse_pos) and self.run and self.viradao_state == 0 and self.health > 0:
