@@ -49,7 +49,7 @@ class Player:
 
         # load fonts for text on screen
         self.text_font = pg.font.SysFont("Consolas", 36, bold=True)
-        self.large_font = pg.font.SysFont("Consolas", 48)
+        self.large_font = pg.font.SysFont("Consolas", 108)
 
         # Load Sounds:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
@@ -86,7 +86,7 @@ class Player:
         self.cancel_button = Button(c.SCREEN_WIDHT + 230, 820, cancel_image, False)
         self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
-        self.restart_button = Button(310, 420, restart_image, False)
+        self.restart_button = Button(600, 600, restart_image, True)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
 
         #Abilities buttons
@@ -216,11 +216,11 @@ class Player:
                 screen.blit(cursor_preview, cursor_rect)
 
         if self.world.game_over:
-            pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
+            pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
             if self.world.game_outcome == -1:
-                draw_text(screen, "GAME OVER", self.large_font, "grey100", 310, 250)
+                draw_text(screen, "DESLIGADO", self.large_font, "grey100", 420, 350)
             elif self.world.game_outcome == 1:
-                draw_text(screen, "YOU WIN", self.large_font, "grey100", 315, 250)
+                draw_text(screen, "Voce formou!", self.large_font, "grey100", 400, 350)
 
     # Returns true if click has resulted in a successful action
     def handle_input(self, event):
