@@ -235,10 +235,10 @@ class Player:
             return True
 
         # Abilities:
-
         if self.viradao_button.check_click(mouse_pos) and self.run and self.viradao_state == 0 and self.health > 0:
             self.viradao_state = 1
             self.viradao_sound.play()
+            self.last_state_time = pg.time.get_ticks()
             self.change_health(-(c.VIRADAO_VIDA_PROPORCIONAL * self.max_health))
             for enemy in self.enemy_group:
                 enemy.viradao()
