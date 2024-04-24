@@ -231,3 +231,6 @@ class Enemy(pg.sprite.Sprite):
     def g(self):
         self.last_state_time_g = pg.time.get_ticks()
         self.g_state = 1
+
+    def bomba(self):
+        self.health -= c.BOMBA_DANO

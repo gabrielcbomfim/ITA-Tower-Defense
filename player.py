@@ -407,6 +407,14 @@ class Player:
                     if pg.math.Vector2(mouse_pos).distance_to(pg.math.Vector2(turret.x, turret.y)) < c.PITBULL_RADIUS:
                         turret.pitbull()
 
+            # Se bota bomba:
+            if self.placing_state == PlacingStates.BOMBA and self.health > 0:
+                self.health -= c.BOMBA_CUSTO_SAUDE
+                self.money -= c.BOMBA_CUSTO_BIZUS
+                for enemy in self.enemy_group:
+                    if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.BOMBA_RADIUS:
+                        enemy.bomba()
+
             # Se torre:
             if self.placing_state in [PlacingStates.TORRE_RANCHO, PlacingStates.TORRE_AULAO, PlacingStates.TORRE_DO_GAGA]:
                 if self.create_turret(mouse_pos):
