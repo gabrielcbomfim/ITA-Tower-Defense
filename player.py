@@ -257,9 +257,6 @@ class Player:
 
         # if placing turrets then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
-            cursor_rect = self.cursor_turret.get_rect()
-            cursor_pos = pg.mouse.get_pos()
-            cursor_rect.center = cursor_pos
 
             # Escolha do cursor preview:
             switch_case_cursor = {
@@ -271,6 +268,9 @@ class Player:
                 PlacingStates.PITBULL: self.cursor_pitbull
             }
             cursor_preview = switch_case_cursor[self.placing_state]
+            cursor_rect = cursor_preview.get_rect()
+            cursor_pos = pg.mouse.get_pos()
+            cursor_rect.center = cursor_pos
             if cursor_pos[0] <= c.SCREEN_WIDHT:
                 # Se for G ou bomba botar circulo:
                 if self.placing_state == PlacingStates.G:
