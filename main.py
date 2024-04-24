@@ -127,7 +127,7 @@ while True:
                 pg.mixer.music.play(-1)
 
                 inferninho_probability = 0
-                if player.i_count != 0:
+                if player.i_count != 0 and world.level != 10:
                     inferninho_probability = random.randint(1, 6 - player.i_count)
                     if inferninho_probability == 1:
                         semestre_atual = world.level
@@ -136,10 +136,12 @@ while True:
                         world.reset_level()
                         world.process_enemies()
                 else:
-                    world.level += 1
-                    world.last_enemy_spawn = pg.time.get_ticks()
-                    world.reset_level()
-                    world.process_enemies()
+                    if world.level != 10:
+                        world.level += 1
+                        world.last_enemy_spawn = pg.time.get_ticks()
+                        world.reset_level()
+                        world.process_enemies()
+
 
         # event handler
         for event in pg.event.get():
