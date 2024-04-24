@@ -54,6 +54,9 @@ while True:
     # Player
     player = Player(turret_group, world, enemy_group)
 
+    inferninho_no_ultimo_level = False
+    inferninho_ja_ocorreu = False
+
     # Game loop
     while player.run:
 
@@ -99,8 +102,16 @@ while True:
 
         player.draw_ui(screen)
 
+
+
         if not world.game_over:
+
+
             if world.level_started:
+
+                if inferninho_no_ultimo_level:
+                    world.level = semestre_atual + 1
+                    inferninho_no_ultimo_level = False
 
                 # Spawn enemies
                 if pg.time.get_ticks() - world.last_enemy_spawn > c.SPAWN_COOLDOWN:
@@ -128,7 +139,15 @@ while True:
                 pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
                 pg.mixer.music.play(-1)
 
-                if world.level != 10:
+                inferninho_probabilidade = 0
+                if player.i_count > 0:
+                    inferninho_probabilidade = random.randint(1, 6 - player.i_count)
+                if inferninho_probabilidade == 1 and not inferninho_ja_ocorreu:
+                    inferninho_no_ultimo_level = True
+                    inferninho_ja_ocorreu = True
+                    semestre_atual = world.level
+                    world.level = 11
+                elif world.level < 10:
                     world.level += 1
                 world.last_enemy_spawn = pg.time.get_ticks()
                 world.reset_level()
