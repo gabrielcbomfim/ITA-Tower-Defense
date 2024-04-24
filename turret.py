@@ -19,6 +19,9 @@ class Turret(pg.sprite.Sprite):
         self.selected = False
         self.specific_data = specific_data
 
+        # Ability control (pitbull):
+        self.pitbull_state = 0
+
 
         # calculate center coordinates
         self.x = (x + 0.5)

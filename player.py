@@ -326,6 +326,14 @@ class Player:
             self.placing_state = PlacingStates.G
             return True
 
+        if self.bomba_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.PITBULL
+            return True
+
+        if self.pitbull_button.check_click(mouse_pos):
+            self.placing_state = PlacingStates.BOMBA
+            return True
+
         if self.begin_button.check_click(mouse_pos):
             self.world.level_started = True
             # Tocar musica agitada:
@@ -378,6 +386,13 @@ class Player:
                 for enemy in self.enemy_group:
                     if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.G_RADIUS:
                         enemy.g()
+
+            # Se bota Pitbull:
+            if self.placing_state == PlacingStates.PITBULL and self.health > 0:
+                self.health -= c.PITBULL_CUSTO
+                for turret in self.turret_group:
+                    if pg.math.Vector2(mouse_pos).distance_to(pg.math.Vector2(turret.x,turret.y)) < c.PITBULL_RADIUS:
+                        pass
 
             # Se torre:
             if self.placing_state in [PlacingStates.TORRE_RANCHO, PlacingStates.TORRE_AULAO, PlacingStates.TORRE_DO_GAGA]:
