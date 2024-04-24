@@ -130,6 +130,7 @@ class TurretRancho(Turret):
         super().__init__(self.sprite_sheets, x, y, data.TURRET_RANCHO_DATA)
         self.food = None
         self.food_type = None
+        self.eating_audio = pg.mixer.Sound("assets/audio/Audio_Pou_Comendo.wav")
 
 
     def create_food(self):
@@ -166,7 +167,8 @@ class TurretRancho(Turret):
                     player.change_health(-10)
                 else:
                     player.change_health(15)
-            self.food = None
+                self.food = None
+                self.eating_audio.play()
             return True
         return False
 
