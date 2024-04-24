@@ -166,6 +166,9 @@ class TurretRancho(Turret):
                     player.change_health(-10)
                 else:
                     player.change_health(15)
+            self.food = None
+            return True
+        return False
 
 
 class TurretAulao(Turret):

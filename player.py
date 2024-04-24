@@ -61,7 +61,7 @@ class Player:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
         self.G_audio = pg.mixer.Sound("assets/audio/G_loko_audio.wav")
         self.bomba_audio = pg.mixer.Sound("assets/audio/Audio_Explosao.wav")
-
+        self.eating_audio = pg.mixer.Sound("assets/audio/Audio_Pou_Comendo.wav")
         # Preview Cursor Images:
         self.cursor_turret = pg.image.load("./assets/turrets/cursor_gaga.png").convert_alpha()
         self.cursor_turret = pg.transform.scale(self.cursor_turret, (60, 60))
@@ -406,6 +406,7 @@ class Player:
         for turret in self.turret_group:
             if type(turret) is Turrets.TurretRancho and True:
                 if turret.eat_food(self, mouse_pos):
+                    self.eating_audio.play()
                     return True
 
         # Put the turret or ability:
