@@ -90,7 +90,7 @@ class Player:
         self.cancel_button = Button(c.SCREEN_WIDHT + 230, 820, cancel_image, False)
         self.turret_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turret_image, True, False)
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
-        self.restart_button = Button(c.SCREEN_WIDHT + 30, 1000, restart_image, True)
+        self.restart_button = Button(c.SCREEN_WIDHT + 30, 880, restart_image, True)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
 
         #Abilities buttons
