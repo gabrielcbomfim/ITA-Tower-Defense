@@ -294,11 +294,28 @@ class Player:
                 screen.blit(cursor_preview, cursor_rect)
 
         if self.world.game_over:
-            pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
+            # pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
             if self.world.game_outcome == -1:
-                draw_text(screen, "Desligado :(", self.large_font, "grey100", 420, 350)
+                # Carregue a imagem original
+                end_image = pg.image.load("./assets/mapa/desligado.png").convert_alpha()
+
+                # Aumente o tamanho da imagem por 5 vezes
+                end_image = pg.transform.scale(end_image, (end_image.get_width() * 5, end_image.get_height() * 5))
+
+                # Exiba a imagem no centro da tela
+                screen.blit(end_image, ((screen.get_width() - end_image.get_width()) // 2, (screen.get_height() - end_image.get_height()) // 2))
+
             elif self.world.game_outcome == 1:
-                draw_text(screen, "Voce formou!", self.large_font, "grey100", 400, 350)
+                # Carregue a imagem original
+                end_image = pg.image.load("./assets/mapa/voce formou.png").convert_alpha()
+
+                # Aumente o tamanho da imagem por 5 vezes
+                end_image = pg.transform.scale(end_image, (end_image.get_width() * 5, end_image.get_height() * 5))
+
+                # Exiba a imagem no centro da tela
+                screen.blit(end_image, (
+                (screen.get_width() - end_image.get_width()) // 2, (screen.get_height() - end_image.get_height()) // 2))
+
 
     # Returns true if click has resulted in a successful action
     def handle_input(self, event, screen):
