@@ -223,6 +223,10 @@ class Player:
     def handle_input(self, event):
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
             self.placing_state = PlacingStates.NOT_PLACING
+            self.cancel_button.visible = False
+            self.upgrade_button.visible = False
+            self.selected_turret = None
+            self.clear_selection()
             return True
 
         # Check if event is Mouse Click:
@@ -272,8 +276,12 @@ class Player:
                 self.selected_turret.upgrade()
                 return True
 
-        if self.cancel_button.check_click(mouse_pos) or pg.mouse.get_pressed()[2] == 1:
+        if self.cancel_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.NOT_PLACING
+            self.cancel_button.visible = False
+            self.upgrade_button.visible = False
+            self.selected_turret = None
+            self.clear_selection()
             return True
 
         for turret in self.turret_group:
@@ -292,6 +300,7 @@ class Player:
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
                 if self.selected_turret is not None:
+                    self.placing_state = PlacingStates.NOT_PLACING
                     return True
 
         return False
