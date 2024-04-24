@@ -140,16 +140,18 @@ while True:
                     # check if player has won
                     if world.level == c.TOTAL_LEVELS and world.check_level_complete():
                         world.game_outcome = 1
-                        pg.mixer.music.load('assets/audio/You are my sunshine Lebron James meme.mp3')
                         pg.mixer.music.play(0)
+                        pg.mixer.music.load('assets/audio/You are my sunshine Lebron James meme.mp3')
+                        pg.mixer.music.play(1)
                         world.game_over = True
 
                 player.money += c.LEVEL_COMPLETE_REWARD
                 world.level_started = False
                 # Tocar musica calma:
-                pg.mixer.music.play(0)
-                pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
-                pg.mixer.music.play(-1)
+                if world.level != 10:
+                    pg.mixer.music.play(0)
+                    pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
+                    pg.mixer.music.play(-1)
 
                 inferninho_probabilidade = 0
                 if player.i_count > 0:
