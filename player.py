@@ -226,8 +226,19 @@ class Player:
 
         draw_text(screen, "Viradão", self.small_font, "black", c.SCREEN_WIDHT + 370, 430)
         draw_text(screen, "+Tempo", self.small_font, "black", c.SCREEN_WIDHT + 370, 470)
-        draw_text(screen, str(c.VIRADAO_VIDA_PROPORCIONAL) + "% da", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 500)
+        draw_text(screen, str(100* c.VIRADAO_VIDA_PROPORCIONAL) + "% da", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 500)
         draw_text(screen, "Saúde Max", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 530)
+
+        draw_text(screen, "Bomba", self.small_font, "black", c.SCREEN_WIDHT + 370, 290)
+        draw_text(screen, str(c.BOMBA_DANO) + " de dano", self.small_font, "black", c.SCREEN_WIDHT + 370, 320)
+        draw_text(screen, str(c.BOMBA_CUSTO_BIZUS) + " Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 370,350)
+        draw_text(screen, str(c.BOMBA_CUSTO_SAUDE) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 380)
+
+        draw_text(screen, "Pitbull", self.small_font, "black", c.SCREEN_WIDHT + 150, 290)
+        draw_text(screen, "+Veloz", self.small_font, "black", c.SCREEN_WIDHT + 150, 320)
+        draw_text(screen, str(c.PITBULL_CUSTO_BIZUS) + " Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 150, 350)
+        draw_text(screen, str(c.PITBULL_CUSTO_SAUDE) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 150, 380)
+
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
@@ -419,14 +430,15 @@ class Player:
                         enemy.g()
 
             # Se bota Pitbull:
-            if self.placing_state == PlacingStates.PITBULL and self.health > 0:
-                self.health -= c.PITBULL_CUSTO
+            if self.placing_state == PlacingStates.PITBULL and self.health > 0 and (self.money - c.PITBULL_CUSTO_BIZUS) >=0:
+                self.health -= c.PITBULL_CUSTO_SAUDE
+                self.money -= c.PITBULL_CUSTO_BIZUS
                 for turret in self.turret_group:
                     if pg.math.Vector2(mouse_pos).distance_to(pg.math.Vector2(turret.x, turret.y)) < c.PITBULL_RADIUS:
                         turret.pitbull()
 
             # Se bota bomba:
-            if self.placing_state == PlacingStates.BOMBA and self.health > 0:
+            if self.placing_state == PlacingStates.BOMBA and self.health > 0 and (self.money - c.BOMBA_CUSTO_BIZUS) >=0:
                 self.health -= c.BOMBA_CUSTO_SAUDE
                 self.money -= c.BOMBA_CUSTO_BIZUS
                 self.bomba_audio.play()
