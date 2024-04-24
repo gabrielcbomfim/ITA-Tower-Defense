@@ -47,6 +47,8 @@ class Enemy(pg.sprite.Sprite):
         self.viradao_state = 0
         self.last_state_time = pg.time.get_ticks()
 
+        self.g_state = 0
+        self.last_state_time_g = pg.time.get_ticks()
         # self.original_image = images.get(enemy_type)
 
 
@@ -182,6 +184,7 @@ class Enemy(pg.sprite.Sprite):
         self.move(world)
         self.check_alive(player, world)
         self.viradao_control(player, world)
+        self.g_control(player, world)
 
 
     def check_alive(self, player, world):
@@ -212,3 +215,19 @@ class Enemy(pg.sprite.Sprite):
         self.last_state_time = pg.time.get_ticks()
         self.viradao_state = 1
 
+    def g_control(self, player, world):
+        if self.g_state == 1:
+            self.speed = -c.G_SPEED
+            if pg.time.get_ticks() - self.last_state_time_g >= c.G_TIME_1/world.game_speed:
+                self.last_state_time_g = pg.time.get_ticks()
+                self.g_state = 2
+        elif self.g_state == 2:
+            self.speed = -0.001
+            if pg.time.get_ticks() - self.last_state_time_g >= c.G_TIME_2/world.game_speed:
+                self.last_state_time_g = pg.time.get_ticks()
+                self.g_state = 0
+                self.speed = self.base_speed
+
+    def g(self):
+        self.last_state_time_g = pg.time.get_ticks()
+        self.g_state = 1
