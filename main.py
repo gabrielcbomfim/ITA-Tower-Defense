@@ -156,7 +156,7 @@ while True:
                     pg.mixer.music.play(-1)
 
                 inferninho_probabilidade = 0
-                if player.i_count > 0:
+                if player.i_count > 1:
                     inferninho_probabilidade = random.randint(1, 6 - player.i_count)
                 if inferninho_probabilidade == 1 and not inferninho_ja_ocorreu:
                     inferninho_no_ultimo_level = True

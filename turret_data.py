@@ -1,9 +1,9 @@
 TURRET_GAGA_DATA = [
     {
         # 1
-        "damage": 10,
+        "damage": 8,
         "range": 225,
-        "cooldown": 600,
+        "cooldown": 800,
         "buy_cost": 200,
         "animation_steps": 8,
     },
@@ -11,14 +11,14 @@ TURRET_GAGA_DATA = [
         # 2
         "damage": 15,
         "range": 250,
-        "cooldown": 500,
+        "cooldown": 700,
         "animation_steps": 8,
     },
     {
         # 3
         "damage": 25,
         "range": 275,
-        "cooldown": 400,
+        "cooldown": 600,
         "animation_steps": 8,
     },
 ]
@@ -34,14 +34,14 @@ TURRET_AULAO_DATA = [
     },
     {
         # 2
-        "damage": 10,
+        "damage": 8,
         "range": 200,
         "cooldown": 1000,
         "animation_steps": 8,
     },
     {
         # 3
-        "damage": 22,
+        "damage": 12,
         "range": 225,
         "cooldown": 1000,
         "animation_steps": 8,

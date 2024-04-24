@@ -163,13 +163,13 @@ class TurretRancho(Turret):
     def eat_food(self, player, mouse_pos):
         if self.food is not None:
             if self.food.check_click(mouse_pos):
+                self.eating_audio.play()
                 if self.food_type:
                     player.change_health(-10)
                 else:
                     player.change_health(15)
                 self.food = None
-                self.eating_audio.play()
-            return True
+                return True
         return False
 
 
