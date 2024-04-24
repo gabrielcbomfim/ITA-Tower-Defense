@@ -71,7 +71,7 @@ class Player:
         # Buttons images:
         upgrade_turret_image = pg.image.load("./assets/buttons/upgrade_turret.png").convert_alpha()
         cancel_image = pg.image.load("./assets/buttons/cancel.png").convert_alpha()
-        buy_turrent_image = pg.image.load("./assets/buttons/buy_turret.png").convert_alpha()
+        buy_turret_image = pg.image.load("./assets/buttons/buy_turret.png").convert_alpha()
         begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
@@ -87,7 +87,7 @@ class Player:
         # Create buttons:
         self.upgrade_button = Button(c.SCREEN_WIDHT + 230, 760, upgrade_turret_image, False)
         self.cancel_button = Button(c.SCREEN_WIDHT + 230, 820, cancel_image, False)
-        self.turrent_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turrent_image, True, False)
+        self.turret_button = Button(c.SCREEN_WIDHT + 30, 120, buy_turret_image, True, False)
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
         self.restart_button = Button(600, 600, restart_image, True)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
@@ -193,7 +193,7 @@ class Player:
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
-        self.turrent_button.draw(screen)
+        self.turret_button.draw(screen)
         self.begin_button.draw(screen)
         self.restart_button.draw(screen)
         self.fast_forward_button.draw(screen)
@@ -201,7 +201,7 @@ class Player:
         self.viradao_button.draw(screen)
         self.g_button.draw(screen)
 
-        # if placing turrents then show turret preview
+        # if placing turrets then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
             cursor_rect = self.cursor_turret.get_rect()
             cursor_pos = pg.mouse.get_pos()
@@ -231,7 +231,7 @@ class Player:
         if self.world.game_over:
             pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
             if self.world.game_outcome == -1:
-                draw_text(screen, "DESLIGADO", self.large_font, "grey100", 420, 350)
+                draw_text(screen, "Desligado :(", self.large_font, "grey100", 420, 350)
             elif self.world.game_outcome == 1:
                 draw_text(screen, "Voce formou!", self.large_font, "grey100", 400, 350)
 
@@ -253,7 +253,7 @@ class Player:
 
         # Towers:
         #Todo: Depois mudar esse botão turret para alguma torre especifica por exemplo aulao:
-        if self.turrent_button.check_click(mouse_pos):
+        if self.turret_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.TORRE_AULAO
             return True
 
