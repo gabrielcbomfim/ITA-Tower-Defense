@@ -31,8 +31,6 @@ enemy_images = {
     "elite": pg.image.load("./assets/enemies/inferninho.png")
 }
 
-# turret spritesheets
-
 # turret_sheet = pg.image.load("./assets/turrets/turret_1.png").convert_alpha()
 # load json data for level
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
@@ -69,10 +67,6 @@ while True:
             # check if player has lost
             if player.i_count > c.I_LIMIT:
                 world.game_outcome = -1
-                world.game_over = True
-            # check if player has won
-            if world.level == c.TOTAL_LEVELS and world.check_level_complete():
-                world.game_outcome = 1
                 world.game_over = True
 
         # update groups
@@ -119,6 +113,14 @@ while True:
 
             # check if the wave is finished
             if world.check_level_complete():
+
+                # Muito bronco, mas ta funcionando
+                if not world.game_over:
+                    # check if player has won
+                    if world.level == c.TOTAL_LEVELS and world.check_level_complete():
+                        world.game_outcome = 1
+                        world.game_over = True
+
                 player.money += c.LEVEL_COMPLETE_REWARD
                 world.level_started = False
                 # Tocar musica calma:
@@ -126,22 +128,11 @@ while True:
                 pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
                 pg.mixer.music.play(-1)
 
-                inferninho_probability = 0
-                if player.i_count != 0 and world.level != 10:
-                    inferninho_probability = random.randint(1, 6 - player.i_count)
-                    if inferninho_probability == 1:
-                        semestre_atual = world.level
-                        world.level = 11 #Inferninho
-                        world.last_enemy_spawn = pg.time.get_ticks()
-                        world.reset_level()
-                        world.process_enemies()
-                else:
-                    if world.level != 10:
-                        world.level += 1
-                        world.last_enemy_spawn = pg.time.get_ticks()
-                        world.reset_level()
-                        world.process_enemies()
-
+                if world.level != 10:
+                    world.level += 1
+                world.last_enemy_spawn = pg.time.get_ticks()
+                world.reset_level()
+                world.process_enemies()
 
         # event handler
         for event in pg.event.get():
