@@ -60,6 +60,7 @@ class Player:
         # Load Sounds:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
         self.G_audio = pg.mixer.Sound("assets/audio/G_loko_audio.wav")
+        self.bomba_audio = pg.mixer.Sound("assets/audio/Audio_Explosao.wav")
 
         # Preview Cursor Images:
         self.cursor_turret = pg.image.load("./assets/turrets/cursor_gaga.png").convert_alpha()
@@ -411,6 +412,7 @@ class Player:
             if self.placing_state == PlacingStates.BOMBA and self.health > 0:
                 self.health -= c.BOMBA_CUSTO_SAUDE
                 self.money -= c.BOMBA_CUSTO_BIZUS
+                self.bomba_audio.play()
                 for enemy in self.enemy_group:
                     if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.BOMBA_RADIUS:
                         enemy.bomba()
