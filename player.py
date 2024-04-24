@@ -366,6 +366,8 @@ class Player:
             return True
 
         if self.restart_button.check_click(mouse_pos):
+            pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
+            pg.mixer.music.play(-1)
             self.restart = True
             self.run = False
             return True

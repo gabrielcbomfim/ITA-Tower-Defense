@@ -38,7 +38,9 @@ game_over_audio = pg.mixer.Sound("assets/audio/Game Over sound effect.mp3")
 with open('assets/mapa/mapaTiled/level_data.tmj') as file:
     world_data = json.load(file)
 
-
+#Primeira tocada de musica lenta:
+pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
+pg.mixer.music.play(-1)
 
 # Restart loop, only quits on pg.QUIT
 while True:
