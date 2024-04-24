@@ -220,7 +220,7 @@ class TurretAulao(Turret):
         return boom_list
 
     def create_animation(self):
-        self.boom = Animation(self.x, self.y, self.boom_list, 8)
+        self.boom = Animation(self.x, self.y, self.boom_list)
 
     def draw(self, surface):
         super().draw(surface)
