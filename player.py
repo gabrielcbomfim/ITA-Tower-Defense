@@ -90,6 +90,12 @@ class Player:
         viradao_image = pg.transform.scale(viradao_image, (120, 120))
         g_image = pg.image.load("./assets/buttons/G_icone.png").convert_alpha()
         g_image = pg.transform.scale(g_image, (120, 120))
+        pitbull_image = pg.image.load("./assets/buttons/Pitbull_moldura.png").convert_alpha()
+        pitbull_image = pg.transform.scale(pitbull_image, (120, 120))
+        bomba_image = pg.image.load("./assets/buttons/bomba_icone.png").convert_alpha()
+        bomba_image = pg.transform.scale(bomba_image, (120, 120))
+
+
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
 
@@ -106,6 +112,8 @@ class Player:
         #Abilities buttons
         self.viradao_button = Button(c.SCREEN_WIDHT + 240, 420, viradao_image, True, False)
         self.g_button = Button(c.SCREEN_WIDHT + 20, 420, g_image, True, False)
+        self.pitbull_button = Button(c.SCREEN_WIDHT + 20, 280, pitbull_image, True, False)
+        self.bomba_button = Button(c.SCREEN_WIDHT + 240, 280, bomba_image, True, False)
 
         self.turret_group = turret_group
         self.world = world
@@ -230,6 +238,8 @@ class Player:
         #Abilities buttons:
         self.viradao_button.draw(screen)
         self.g_button.draw(screen)
+        self.pitbull_button.draw(screen)
+        self.bomba_button.draw(screen)
 
         # if placing turrets then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
