@@ -58,6 +58,7 @@ class Player:
 
         # Load Sounds:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
+        self.G_audio = pg.mixer.Sound("assets/audio/G_loko_audio.wav")
 
         # Preview Cursor Images:
         self.cursor_turret = pg.image.load("./assets/turrets/cursor_gaga.png").convert_alpha()
@@ -203,12 +204,19 @@ class Player:
         # Draw description texts:
         draw_text(screen, "Gagá-" + str(turret_data.TURRET_GAGA_DATA[0]["buy_cost"]) + "B", self.small_font,
                   "darkgreen", c.SCREEN_WIDHT+210, 250)
-        draw_text(screen,"Aulão-" + str(turret_data.TURRET_AULAO_DATA[0]["buy_cost"]) + "B", self.small_font,
+        draw_text(screen, "Aulão-" + str(turret_data.TURRET_AULAO_DATA[0]["buy_cost"]) + "B", self.small_font,
                   "darkgreen", c.SCREEN_WIDHT+330, 250)
         draw_text(screen, "Rancho-" + str(turret_data.TURRET_RANCHO_DATA[0]["buy_cost"]) + "B", self.small_font,
                   "darkgreen", c.SCREEN_WIDHT + 50, 250)
-        
+        # Descriptions for the abilities:
+        draw_text(screen, "G", self.text_font, "black",  c.SCREEN_WIDHT + 150, 430)
+        draw_text(screen, "Empurra", self.small_font, "black", c.SCREEN_WIDHT + 150, 470)
+        draw_text(screen, str(c.G_CUSTO) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 150, 500)
 
+        draw_text(screen, "Viradão", self.small_font, "black", c.SCREEN_WIDHT + 370, 430)
+        draw_text(screen, "+Tempo", self.small_font, "black", c.SCREEN_WIDHT + 370, 470)
+        draw_text(screen, str(c.VIRADAO_VIDA_PROPORCIONAL) + "% da", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 500)
+        draw_text(screen, "Saúde Max", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 530)
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
@@ -355,6 +363,8 @@ class Player:
 
             # Se bota G:
             if self.placing_state == PlacingStates.G and self.health > 0:
+                self.G_audio.play()
+                self.health -= c.G_CUSTO
                 for enemy in self.enemy_group:
                     if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.G_RADIUS:
                         enemy.g()
