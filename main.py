@@ -126,10 +126,20 @@ while True:
                 pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
                 pg.mixer.music.play(-1)
 
-                world.level += 1
-                world.last_enemy_spawn = pg.time.get_ticks()
-                world.reset_level()
-                world.process_enemies()
+                inferninho_probability = 0
+                if player.i_count != 0:
+                    inferninho_probability = random.randint(1, 6 - player.i_count)
+                    if inferninho_probability == 1:
+                        semestre_atual = world.level
+                        world.level = 11 #Inferninho
+                        world.last_enemy_spawn = pg.time.get_ticks()
+                        world.reset_level()
+                        world.process_enemies()
+                else:
+                    world.level += 1
+                    world.last_enemy_spawn = pg.time.get_ticks()
+                    world.reset_level()
+                    world.process_enemies()
 
         # event handler
         for event in pg.event.get():
