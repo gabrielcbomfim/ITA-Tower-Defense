@@ -58,7 +58,9 @@ class Player:
         self.viradao_sound = pg.mixer.Sound("assets/audio/Efeito_sonoro_viradao.wav")
 
         # Preview Cursor Images:
-        self.cursor_turret = pg.image.load("./assets/turrets/cursor_turret.png").convert_alpha()
+        self.cursor_turret = pg.image.load("./assets/turrets/cursor_gaga.png").convert_alpha()
+        self.cursor_turret = pg.transform.scale(self.cursor_turret, (60, 60))
+        self.cursor_rancho = pg.image.load("./assets/turrets/cursor_rancho.png").convert_alpha()
         self.cursor_bomba = pg.image.load("./assets/abilities/bomba.png").convert_alpha()
         self.cursor_G = pg.image.load("./assets/abilities/G.png").convert_alpha()
         self.cursor_pitbull = pg.image.load('./assets/abilities/pitbull.png').convert_alpha()
@@ -76,7 +78,10 @@ class Player:
         begin_image = pg.image.load("./assets/buttons/begin.png").convert_alpha()
         restart_image = pg.image.load("./assets/buttons/restart.png").convert_alpha()
         fast_forward_image = pg.image.load("./assets/buttons/fast_forward.png").convert_alpha()
-
+        # Turrets images:
+        torre_gaga_image = pg.image.load("./assets/turrets/TurretGaga/gaga_icone.png").convert_alpha()
+        torre_aulao_image = pg.image.load("./assets/turrets/TurretAulao/aulao_icone.png").convert_alpha()
+        torre_rancho_image = pg.image.load("./assets/turrets/TurretRancho/turret_3.png").convert_alpha()
         # Abilities images:
         viradao_image = pg.image.load("./assets/buttons/viradao_icone.png").convert_alpha()
         viradao_image = pg.transform.scale(viradao_image, (130, 130))
@@ -92,7 +97,10 @@ class Player:
         self.begin_button = Button(c.SCREEN_WIDHT + 30, 760, begin_image)
         self.restart_button = Button(c.SCREEN_WIDHT + 30, 880, restart_image, True)
         self.fast_forward_button = Button(c.SCREEN_WIDHT + 30, 820, fast_forward_image, True, False)
-
+        # Turret buttons:
+        self.gaga_button = Button(c.SCREEN_WIDHT + 30, 400, torre_gaga_image, True, False)
+        self.aulao_button = Button(c.SCREEN_WIDHT + 30, 500, torre_aulao_image, True, False)
+        self.rancho_button = Button(c.SCREEN_WIDHT + 30, 600, torre_rancho_image, True, False)
         #Abilities buttons
         self.viradao_button = Button(c.SCREEN_WIDHT + 300, 400, viradao_image, True, False)
         self.g_button = Button(c.SCREEN_WIDHT + 150, 400, g_image, True, False)
@@ -198,6 +206,10 @@ class Player:
         self.begin_button.draw(screen)
         self.restart_button.draw(screen)
         self.fast_forward_button.draw(screen)
+        # Turret buttons:
+        self.aulao_button.draw(screen)
+        self.gaga_button.draw(screen)
+        self.rancho_button.draw(screen)
         #Abilities buttons:
         self.viradao_button.draw(screen)
         self.g_button.draw(screen)
@@ -265,6 +277,7 @@ class Player:
         if self.turret_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.TORRE_AULAO
             return True
+        
 
         # Abilities:
         if self.viradao_button.check_click(mouse_pos) and self.run and self.viradao_state == 0 and self.health > 0:
@@ -344,4 +357,3 @@ class Player:
         return False
 
 
-    
