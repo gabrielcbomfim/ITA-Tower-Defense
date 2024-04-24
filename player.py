@@ -4,6 +4,7 @@ from button import Button
 from world import PlotStates
 from panel import Panel
 from enum import Enum
+import math
 import constants as c
 
 
@@ -218,15 +219,23 @@ class Player:
             }
             cursor_preview = switch_case_cursor[self.placing_state]
             if cursor_pos[0] <= c.SCREEN_WIDHT:
+                # Se for G ou bomba botar circulo:
+                if self.placing_state == PlacingStates.G:
+                    radius = c.G_RADIUS
+                elif self.placing_state == PlacingStates.BOMBA:
+                    radius = c.BOMBA_RADIUS
+                if self.placing_state == PlacingStates.G or self.placing_state == PlacingStates.BOMBA:
+                    self.range_image = pg.Surface((radius * 2, radius * 2))
+                    self.range_image.fill((0, 0, 0))
+                    self.range_image.set_colorkey((0, 0, 0))
+                    pg.draw.circle(self.range_image, "grey100", (radius,  radius), radius)
+                    self.range_image.set_alpha(50)
+                    self.range_rect = self.range_image.get_rect()
+                    self.range_rect.center = (cursor_pos[0], cursor_pos[1])
+                    screen.blit(self.range_image, self.range_rect)
+
+                # Por fim desenhar o icone:
                 screen.blit(cursor_preview, cursor_rect)
-            # Se for G botar circulo:
-            self.range_image = pg.Surface((c.G_RADIUS * 2, c.G_RADIUS * 2))
-            self.range_image.fill((0, 0, 0))
-            self.range_image.set_colorkey((0, 0, 0))
-            pg.draw.circle(self.range_image, "grey100", (c.G_RADIUS,  c.G_RADIUS), c.G_RADIUS)
-            self.range_image.set_alpha(100)
-            self.range_rect = self.range_image.get_rect()
-            self.range_rect.center = (cursor_pos[0], cursor_pos[1])
 
         if self.world.game_over:
             pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
@@ -267,7 +276,7 @@ class Player:
                 enemy.viradao()
             return True
 
-        if self.g_button.check_click(mouse_pos) and self.health > 0:
+        if self.g_button.check_click(mouse_pos):
             self.placing_state = PlacingStates.G
             return True
 
@@ -309,14 +318,23 @@ class Player:
                 if turret.eat_food(self, mouse_pos):
                     return True
 
-        # Check if mouse is on the game area
+        # Put the turret or ability:
+        # Check if mouse is on the game area:
         if mouse_pos[0] < c.SCREEN_WIDHT and mouse_pos[1] < c.SCREEN_HEIGHT:
             # clear selected turrets
             self.selected_turret = None
             self.clear_selection()
 
-            if self.create_turret(mouse_pos):
-                return True
+            # Se bota G:
+            if self.placing_state == PlacingStates.G and self.health > 0:
+                for enemy in self.enemy_group:
+                    if pg.math.Vector2(mouse_pos).distance_to(enemy.pos) < c.G_RADIUS:
+                        enemy.g()
+
+            # Se torre:
+            if self.placing_state in [PlacingStates.TORRE_RANCHO, PlacingStates.TORRE_AULAO, PlacingStates.TORRE_DO_GAGA]:
+                if self.create_turret(mouse_pos):
+                    return True
             else:
                 self.selected_turret = self.select_turret(mouse_pos)
                 if self.selected_turret is not None:
@@ -324,3 +342,6 @@ class Player:
                     return True
 
         return False
+
+
+    
