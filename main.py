@@ -40,7 +40,7 @@ with open('assets/mapa/mapaTiled/level_data.tmj') as file:
 while True:
 
     update_time = 0
-    path_aleatorio = 5
+    path_aleatorio = 0
 
     # Create world
     world = World(screen, world_data, map_image_resized)
