@@ -38,6 +38,8 @@ class Player:
         #Controle de habilidades:
         self.viradao_state = 0
         self.last_state_time = pg.time.get_ticks()
+        self.range_image = None
+        self.range_rect = None
 
         self.i_count = 0
         self.i_list = []
@@ -76,8 +78,9 @@ class Player:
 
         # Abilities images:
         viradao_image = pg.image.load("./assets/buttons/viradao_icone.png").convert_alpha()
-        viradao_image = pg.transform.scale(viradao_image, (140, 140))
-
+        viradao_image = pg.transform.scale(viradao_image, (130, 130))
+        g_image = pg.image.load("./assets/buttons/G_icone.png").convert_alpha()
+        g_image = pg.transform.scale(g_image, (130, 130))
         # Create panel:
         self.panel = Panel(c.SCREEN_WIDHT - 140, 0, panel_image)
 
@@ -91,6 +94,7 @@ class Player:
 
         #Abilities buttons
         self.viradao_button = Button(c.SCREEN_WIDHT + 300, 400, viradao_image, True, False)
+        self.g_button = Button(c.SCREEN_WIDHT + 150, 400, g_image, True, False)
 
         self.turret_group = turret_group
         self.world = world
@@ -195,6 +199,7 @@ class Player:
         self.fast_forward_button.draw(screen)
         #Abilities buttons:
         self.viradao_button.draw(screen)
+        self.g_button.draw(screen)
 
         # if placing turrents then show turret preview
         if self.placing_state != PlacingStates.NOT_PLACING:
@@ -214,6 +219,14 @@ class Player:
             cursor_preview = switch_case_cursor[self.placing_state]
             if cursor_pos[0] <= c.SCREEN_WIDHT:
                 screen.blit(cursor_preview, cursor_rect)
+            # Se for G botar circulo:
+            self.range_image = pg.Surface((c.G_RADIUS * 2, c.G_RADIUS * 2))
+            self.range_image.fill((0, 0, 0))
+            self.range_image.set_colorkey((0, 0, 0))
+            pg.draw.circle(self.range_image, "grey100", (c.G_RADIUS,  c.G_RADIUS), c.G_RADIUS)
+            self.range_image.set_alpha(100)
+            self.range_rect = self.range_image.get_rect()
+            self.range_rect.center = (cursor_pos[0], cursor_pos[1])
 
         if self.world.game_over:
             pg.draw.rect(screen, "black", (200, 200, 1000, 400), border_radius=30)
@@ -252,6 +265,10 @@ class Player:
             self.change_health(-(c.VIRADAO_VIDA_PROPORCIONAL * self.max_health))
             for enemy in self.enemy_group:
                 enemy.viradao()
+            return True
+
+        if self.g_button.check_click(mouse_pos) and self.health > 0:
+            self.placing_state = PlacingStates.G
             return True
 
         if self.begin_button.check_click(mouse_pos):
