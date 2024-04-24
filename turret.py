@@ -121,6 +121,7 @@ class TurretRancho(Turret):
         sprite_food = []
         for i in range(1, 3):
             sprite_food.append(pg.image.load(f"./assets/turrets/TurretRancho/food_{i}.png").convert_alpha())
+            sprite_food[i - 1] = pg.transform.scale(sprite_food[i - 1], (100, 100))
         self.food_type = random.randint(0, 1)
         x = self.rect.topleft[0]
         y = self.rect.topleft[1]
