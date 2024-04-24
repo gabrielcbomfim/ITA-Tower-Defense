@@ -207,7 +207,7 @@ class Player:
                   "darkgreen", c.SCREEN_WIDHT+330, 250)
         draw_text(screen, "Rancho-" + str(turret_data.TURRET_RANCHO_DATA[0]["buy_cost"]) + "B", self.small_font,
                   "darkgreen", c.SCREEN_WIDHT + 50, 250)
-        draw_text(screen, )
+        
 
         # draw buttons:
         self.upgrade_button.draw(screen)
