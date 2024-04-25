@@ -6,12 +6,19 @@ O projeto é um jogo para a disciplina de CSI-21. O jogo é no estilo tower defe
 ## 🚀 Regras
 
 Para isso, o jador deve sobreviver a 10 semestres (ondas de inimigos).
+
 Os inimigos são provas, labs, listas, um avião (projeto de engenharia) e até mesmo um demônio do inferninho (que é como chamamos a CVAR, o conselho que decide se você desliga ou não).
+
 Inimigos são gerados no Fund e na Comp e seguem uma trilha semi-aleatória.
+
 Se um inimigo conseguir chegar ao H8, você ganha um I.
+
 Você pode ter no máximo 5 Is (insuficiente). No sexto, você é desligado.
+
 A cada I, aumenta suas chances de que no final do semestre ocorra um evento aleatório chamado inferninho, que é uma fase muito difícil de passar, com os inimigos demônios.
+
 Para matar os inimigos, o jogador deve comprar torres e usar suas habilidades estrategicamente e rapidamente.
+
 As moedas de troca do jogo são bizus (dinheiro) e saúde (que são gastas nas habilidades).
 
 ### 🏟️ Torres
