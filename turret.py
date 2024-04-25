@@ -63,9 +63,11 @@ class Turret(pg.sprite.Sprite):
 
         return animation_list
 
+    # so esta aqui pq eh chamado em play animation de forma especifica para cada filho
     def action(self, enemy_group):
         pass
 
+    # Realiza a animacao da torre dps ativa a sua acao, seja ela de dano ou dropar comida
     def play_animation(self, world, enemy_group):
         # update image
         self.original_image = self.animation_list[self.frame_index]
@@ -81,6 +83,7 @@ class Turret(pg.sprite.Sprite):
                 self.action(enemy_group)
                 self.target = None
 
+    # desenha a torre na tela
     def draw(self, surface):
         self.image = pg.transform.rotate(self.original_image, self.angle - 90)
         self.rect = self.image.get_rect()
@@ -89,6 +92,7 @@ class Turret(pg.sprite.Sprite):
         if self.selected:
             surface.blit(self.range_image, self.range_rect)
 
+    # Atualiza os dados da torre dps de um upgrade
     def upgrade(self):
         self.upgrade_level += 1
         self.range = self.specific_data[self.upgrade_level - 1]["range"]
@@ -107,11 +111,13 @@ class Turret(pg.sprite.Sprite):
         self.range_rect = self.range_image.get_rect()
         self.range_rect.center = self.rect.center
 
+    # interacao do pitbull com as torres
     def pitbull(self):
         self.last_state_time = pg.time.get_ticks()
         self.cooldown_natural = self.cooldown
         self.pitbull_state = 1
 
+    # same
     def pitbull_control(self, player, world):
         if self.pitbull_state == 1:
             self.cooldown = self.cooldown_natural / c.PITBULL_FACTOR
@@ -120,6 +126,7 @@ class Turret(pg.sprite.Sprite):
                 self.pitbull_state = 0
                 self.cooldown = self.cooldown_natural
 
+# Torre que dropa comida
 class TurretRancho(Turret):
 
     def __init__(self, x, y):
@@ -132,7 +139,7 @@ class TurretRancho(Turret):
         self.food_type = None
         self.eating_audio = pg.mixer.Sound("assets/audio/Audio_Pou_Comendo.wav")
 
-
+    # Cria a comida
     def create_food(self):
         # TODO
         # Criar sprite de foods
@@ -145,6 +152,7 @@ class TurretRancho(Turret):
         y = self.rect.topleft[1]
         self.food = Button(x + 25, y - 10, sprite_food[self.food_type])
 
+    # atualizacao para cada frame do jogo
     def update(self, enemy_group, world):
         # TODO
         # Criar dados de cooldown da torre rancho
@@ -155,11 +163,13 @@ class TurretRancho(Turret):
             self.last_action = pg.time.get_ticks()
         self.pitbull_control(self, world)
 
+    # desenha a torre, e a comida se houver alguma
     def draw(self, surface):
         super().draw(surface)
         if self.food is not None:
             self.food.draw(surface)
 
+    # aplica os efeitos da comida no player
     def eat_food(self, player, mouse_pos):
         if self.food is not None:
             if self.food.check_click(mouse_pos):
@@ -172,7 +182,7 @@ class TurretRancho(Turret):
                 return True
         return False
 
-
+# Torre que da dano em area
 class TurretAulao(Turret):
     def __init__(self, x, y):
         turret_spritesheets = []
@@ -183,14 +193,14 @@ class TurretAulao(Turret):
         self.target = None
 
 
-
-
+        # parte realitva a animacao do dano em area
         self.boomimage = pg.image.load(f"./assets/turrets/TurretAulao/boomaulao.png").convert_alpha()
         self.boom_list = self.load_boom()
         self.boom = None
         self.create_animation()
 
 
+    # atualiacao a cada frame do jogo
     def update(self, enemy_group, world):
         # if target picked, play firing animation
         if pg.time.get_ticks() - self.last_action > (self.cooldown / world.game_speed) and self.target:
@@ -200,11 +210,14 @@ class TurretAulao(Turret):
             self.boom.frame_index = 0
         self.pitbull_control(self, world)
 
+    # faz a animacao da torre e do ataque
     def play_animation(self, world, enemy_group):
         super().play_animation(world, enemy_group)
         self.boom.update()
+
+    # carrega os dados do sprite do ataque
     def load_boom(self):
-# extract images from sprite sheets
+        # extract images from sprite sheets
         sprite_width = self.boomimage.get_width()
         sprite_height = self.boomimage.get_height()
 
@@ -224,15 +237,18 @@ class TurretAulao(Turret):
 
         return boom_list
 
+    # define o boom como um objeto animacao
     def create_animation(self):
         self.boom = Animation(self.x, self.y, self.boom_list)
 
+    # desenha o a torre e o ataque
     def draw(self, surface):
         super().draw(surface)
         sprite_width = self.boom_list[0].get_width()
         if self.boom is not None:
             self.boom.draw(surface,self.x - sprite_width/2,self.y - sprite_width/2)
 
+    # verifica se ha algum inimigo proximo
     def pick_target(self, enemy_group, world):
         # search for new target
         for enemy in enemy_group:
@@ -244,6 +260,7 @@ class TurretAulao(Turret):
                     self.target = enemy
                     break
 
+    # ataca em area houver algum inimigo proximo
     def action(self, enemy_group):
         for enemy in enemy_group:
             if enemy.health > 0:
@@ -256,7 +273,7 @@ class TurretAulao(Turret):
                     # ajustar 0.5 (dano da torre em area)
                     enemy.health -= self.damage
 
-
+# torre que da dano single target
 class TurretGaga(Turret):
 
     def __init__(self, x, y):
@@ -267,6 +284,7 @@ class TurretGaga(Turret):
         super().__init__(self.sprite_sheets, x, y, data.TURRET_GAGA_DATA)
         self.target = None
 
+    # atualiza a cada frame do jogo
     def update(self, enemy_group, world):
         # if target picked, play firing animation
         if self.target:
@@ -278,7 +296,7 @@ class TurretGaga(Turret):
             self.pick_target(enemy_group, world)
         self.pitbull_control(self, world)
 
-
+    # verifica se ha algum alvo proximo
     def pick_target(self, enemy_group, world):
         # search for new target
         for enemy in enemy_group:
@@ -291,6 +309,7 @@ class TurretGaga(Turret):
                     self.angle = math.degrees(math.atan2(-y_dist, x_dist))
                     break
 
+    # ataca o primeiro alvo a entrar no range da torre
     def action(self, enemy_group):
         if self.target:
             self.target.health -= self.damage
