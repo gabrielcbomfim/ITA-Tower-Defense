@@ -6,6 +6,7 @@ import turret_data as data
 import random
 from button import Button
 
+#classe para animação das torres e inimigos
 class Animation():
     def __init__(self,x, y, images):
 
@@ -50,6 +51,7 @@ class Animation():
         # draw image
         surface.blit(self.image, self.rect)
 
+    #update position from enemie
     def update_position(self, x, y):
         self.x = x
         self.y = y

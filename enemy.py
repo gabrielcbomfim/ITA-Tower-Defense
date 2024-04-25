@@ -27,6 +27,7 @@ class Enemy(pg.sprite.Sprite):
         rect (Rect): Retângulo que está centrado no inimigo
     """
 
+    #inicializa os inimigos
     def __init__(self, enemy_type, waypoints, images):
         pg.sprite.Sprite.__init__(self)
         self.waypoints = waypoints

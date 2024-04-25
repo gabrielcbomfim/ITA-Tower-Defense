@@ -123,12 +123,15 @@ class Player:
         self.turret_group = turret_group
         self.world = world
 
+
     def change_health(self, delta_health):
         self.health += delta_health
         self.health = min(self.health, self.max_health)
 
+    #cria uma torre
     def create_turret(self, mouse_pos):
         for plot in self.world.plots:
+            #verifica qual torre selecionada
             if plot.state == PlotStates.FOR_SALE and plot.is_in(mouse_pos):
                 if self.placing_state == PlacingStates.TORRE_AULAO:
                     turret = Turrets.TurretAulao(plot.center()[0], plot.center()[1])
@@ -138,7 +141,8 @@ class Player:
                     turret = Turrets.TurretRancho(plot.center()[0], plot.center()[1])
                 else:
                     return False
-
+                
+                #compra
                 if self.money >= turret.buy_cost:
                     self.turret_group.add(turret)
                     # deduct cost of turret
@@ -148,13 +152,15 @@ class Player:
                 else:
                     return False
         return False
-
+    
+    #select turret with mouse
     def select_turret(self, mouse_pos):
         for turret in self.turret_group:
             if abs(turret.x - mouse_pos[0]) <= 20 and abs(turret.y - mouse_pos[1]) <= 20:
                 turret.selected = True
                 return turret
 
+    #clear selection if not a turret on market
     def clear_selection(self):
         for turret in self.turret_group:
             turret.selected = False
@@ -188,6 +194,7 @@ class Player:
             if self.selected_turret.upgrade_level < c.TURRET_LEVELS:
                 self.upgrade_button.visible = True
 
+    
     def add_i(self):
         self.i_count += 1
         self.max_health -= 15
@@ -225,17 +232,17 @@ class Player:
         draw_text(screen, "G", self.text_font, "black",  c.SCREEN_WIDHT + 150, 430)
         draw_text(screen, "Empurra", self.small_font, "black", c.SCREEN_WIDHT + 150, 470)
         draw_text(screen, str(c.G_CUSTO) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 150, 500)
-
+        #VIRADAO
         draw_text(screen, "Viradão", self.small_font, "black", c.SCREEN_WIDHT + 370, 430)
         draw_text(screen, "+Tempo", self.small_font, "black", c.SCREEN_WIDHT + 370, 470)
         draw_text(screen, str(100* c.VIRADAO_VIDA_PROPORCIONAL) + "% da", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 500)
         draw_text(screen, "Saúde Max", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 530)
-
+        #BOMBA
         draw_text(screen, "Bomba", self.small_font, "black", c.SCREEN_WIDHT + 370, 290)
         draw_text(screen, str(c.BOMBA_DANO) + " de dano", self.small_font, "black", c.SCREEN_WIDHT + 370, 320)
         draw_text(screen, str(c.BOMBA_CUSTO_BIZUS) + " Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 370,350)
         draw_text(screen, str(c.BOMBA_CUSTO_SAUDE) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 370, 380)
-
+        #PITBULL
         draw_text(screen, "Pitbull", self.small_font, "black", c.SCREEN_WIDHT + 150, 290)
         draw_text(screen, "+Veloz", self.small_font, "black", c.SCREEN_WIDHT + 150, 320)
         draw_text(screen, str(c.PITBULL_CUSTO_BIZUS) + " Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 150, 350)
