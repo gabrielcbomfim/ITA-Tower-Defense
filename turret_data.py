@@ -1,3 +1,4 @@
+# Dados da torre gaga para cada nivel
 TURRET_GAGA_DATA = [
     {
         # 1
@@ -23,6 +24,7 @@ TURRET_GAGA_DATA = [
     },
 ]
 
+# Dados para a torre aula em cada nivel
 TURRET_AULAO_DATA = [
     {
         # 1
@@ -48,6 +50,7 @@ TURRET_AULAO_DATA = [
     },
 ]
 
+# Dados para torre rancho em cada nivel
 TURRET_RANCHO_DATA = [
     {
         # 1
