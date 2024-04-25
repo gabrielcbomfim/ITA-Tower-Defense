@@ -154,7 +154,8 @@ while True:
                     pg.mixer.music.play(0)
                     pg.mixer.music.load('assets/audio/CovaDela90BPM.wav')
                     pg.mixer.music.play(-1)
-
+                
+                #probabilidade do evento inferninho ocorrer
                 inferninho_probabilidade = 0
                 if player.i_count > 1:
                     inferninho_probabilidade = random.randint(1, 6 - player.i_count)
