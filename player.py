@@ -241,6 +241,9 @@ class Player:
         draw_text(screen, str(c.PITBULL_CUSTO_BIZUS) + " Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 150, 350)
         draw_text(screen, str(c.PITBULL_CUSTO_SAUDE) + " Saúde", self.small_font, "darkred", c.SCREEN_WIDHT + 150, 380)
 
+        if self.upgrade_button.visible:
+            draw_text(screen, "200 Bizus", self.small_font, "darkgreen", c.SCREEN_WIDHT + 350, 740)
+
         # draw buttons:
         self.upgrade_button.draw(screen)
         self.cancel_button.draw(screen)
