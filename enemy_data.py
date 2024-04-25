@@ -1,3 +1,4 @@
+# Numero de inimigos para cada horda
 ENEMY_SPAWN_DATA = [
   {
     #1
@@ -78,6 +79,7 @@ ENEMY_SPAWN_DATA = [
   }
 ]
 
+# Dados para cada tipo de inimigo
 ENEMY_DATA = {
     "weak": {
     "health": 10,
