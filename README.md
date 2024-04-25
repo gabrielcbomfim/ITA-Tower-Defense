@@ -5,7 +5,7 @@ O projeto é um jogo para a disciplina de CSI-21. O jogo é no estilo tower defe
 
 ## 🚀 Regras
 
-Para isso, o jador deve sobreviver a 10 semestres (ondas de inimigos).
+Para isso, o jogador deve sobreviver a 10 semestres (ondas de inimigos).
 
 Os inimigos são provas, labs, listas, um avião (projeto de engenharia) e até mesmo um demônio do inferninho (que é como chamamos a CVAR, o conselho que decide se você desliga ou não).
 
