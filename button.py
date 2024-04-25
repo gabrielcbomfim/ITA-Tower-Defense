@@ -9,11 +9,13 @@ class Button():
         self.visible = visible
         self.single_click = single_click
 
+    # desenha o botao na tela
     def draw(self, surface):
         if self.visible:
             # Draw button on screen
             surface.blit(self.image, self.rect)
 
+    # verifica se o botao foi clicado
     def check_click(self, pos):
         action = False
 
