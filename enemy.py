@@ -102,7 +102,7 @@ class Enemy(pg.sprite.Sprite):
             animation_list = animation_lists[self.direction]
         return animation_list, animation_lists
 
-
+    #animação dos inimigos (pega os sprits no vetor)
     def play_animation(self, world):
         if self.type == "elite":
             if self.direction == 0:
@@ -177,7 +177,8 @@ class Enemy(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
-
+    
+    #define todas as funções dentro do update
     def update(self, player, world):
         self.play_animation(world)
         self.rotate(player, world)
@@ -186,13 +187,14 @@ class Enemy(pg.sprite.Sprite):
         self.viradao_control(player, world)
         self.g_control(player, world)
 
-
+    #clear the killed enemies from world
     def check_alive(self, player, world):
         if self.health <= 0:
             player.money += c.KILL_REWARD
             world.killed_enemies += 1
             self.kill()
 
+    #efeitos durante a abilidade do viradão
     def viradao_control(self, player, world):
         if self.viradao_state == 1:
             self.speed = self.base_speed/3
@@ -227,10 +229,12 @@ class Enemy(pg.sprite.Sprite):
                 self.last_state_time_g = pg.time.get_ticks()
                 self.g_state = 0
                 self.speed = self.base_speed
-
+    
+    #empurrao do G
     def g(self):
         self.last_state_time_g = pg.time.get_ticks()
         self.g_state = 1
-
+    
+    #dano causado pela BOMBA
     def bomba(self):
         self.health -= c.BOMBA_DANO
