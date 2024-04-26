@@ -2,6 +2,9 @@ import pygame as pg
 
 
 class Button():
+    """
+    A class to create buttons
+    """
     def __init__(self, x, y, image, visible=True, single_click=True):
         self.image = image
         self.rect = self.image.get_rect()
