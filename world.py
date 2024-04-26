@@ -1,7 +1,9 @@
 import pygame as pg
 from enum import Enum
 import random
+import constants as c
 from enemy_data import ENEMY_SPAWN_DATA
+
 
 class PlotStates(Enum):
     """
@@ -49,18 +51,25 @@ class World:
      Attributes:
          image: A imagem do mapa.
      """
+
     def __init__(self, screen, data, map_image):
+        self.game_over = False
+        self.game_outcome = 0  # -1 is loss, 1 is win
+        self.level_started = False
+        self.level = 1
+        self.game_speed = c.GAME_SPEED
         self.paths = []
         self.plots = []
         self.level_data = data
         self.image = map_image
         self.enemy_list = []
+        self.last_enemy_spawn = pg.time.get_ticks()
         self.spawned_enemies = 0
+        self.killed_enemies = 0
+        self.missed_enemies = 0
 
-        self.x_ratio = screen.get_width()/(data['width']*data['tilewidth'])
-        self.y_ratio = screen.get_height()/(data['height']*data['tileheight'])
-        self.process_data()
-
+        self.x_ratio = screen.get_width() / (data['width'] * data['tilewidth'])
+        self.y_ratio = screen.get_height() / (data['height'] * data['tileheight'])
 
     def process_data(self):
         """
@@ -74,6 +83,7 @@ class World:
                 for obj in layer["objects"]:
                     # Armazena as posições corrigidas dos lotes:
                     self.plots.append(Plot(obj, self.x_ratio, self.y_ratio))
+
     def process_waypoints(self, points, abs_x, abs_y):
         """
         Itera pelos waypoints para extrair sets individuais das coordenadas x e y
@@ -102,10 +112,26 @@ class World:
         """
         Processa os inimigos do arquivo de dados
         """
-        enemies = ENEMY_SPAWN_DATA[self.level -1]
+        enemies = ENEMY_SPAWN_DATA[self.level - 1]
         for enemy_type in enemies:
             enemies_to_spawn = enemies[enemy_type]
             for enemy in range(enemies_to_spawn):
                 self.enemy_list.append(enemy_type)
-        #now randomize the list to shuffle the enemies
+        # now randomize the list to shuffle the enemies
         random.shuffle(self.enemy_list)
+
+    def check_level_complete(self):
+        """
+        Checa se o level foi completado
+        """
+        if (self.killed_enemies + self.missed_enemies) == len(self.enemy_list):
+            return True
+
+    def reset_level(self):
+        """
+        Reseta o level
+        """
+        self.spawned_enemies = 0
+        self.killed_enemies = 0
+        self.missed_enemies = 0
+        self.enemy_list = []
