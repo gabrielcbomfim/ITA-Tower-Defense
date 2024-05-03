@@ -1,6 +1,6 @@
 # ITAwer Defense
 
-O projeto é um jogo para a disciplina de CSI-21. O jogo é no estilo tower defense com o objetivo de se formar no ITA.
+O projeto é um jogo para a disciplina de CSI-22. O jogo é no estilo tower defense com o objetivo de se formar no ITA.
 
 
 ## 🚀 Regras
